@@ -40,3 +40,4 @@ hs_err_pid*
 
 # Local files
 /target/
+/data/
