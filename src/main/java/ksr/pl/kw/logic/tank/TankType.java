@@ -14,5 +14,12 @@ public enum TankType {
         this.dbName = dbName;
         this.uiName = uiName;
     }
-
+    public static TankType valueOfLabel(String label) {
+        for (TankType e : values()) {
+            if (e.dbName.equals(label)) {
+                return e;
+            }
+        }
+        return null;
+    }
 }
