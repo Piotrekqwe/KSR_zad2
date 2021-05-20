@@ -3,10 +3,10 @@ package ksr.pl.kw.logic.fuzzy;
 import java.io.Serializable;
 
 public class FuzzySet implements Serializable {
-    private int[] abcd;
+    private double[] abcd;
     private String label;
 
-    public FuzzySet(int[] abcd, String label) {
+    public FuzzySet(double[] abcd, String label) {
         this.abcd = abcd;
         this.label = label;
     }
@@ -16,7 +16,7 @@ public class FuzzySet implements Serializable {
         return label;
     }
 
-    public int[] getAbcd() {
+    public double[] getAbcd() {
         return abcd;
     }
 
@@ -24,7 +24,7 @@ public class FuzzySet implements Serializable {
         return label;
     }
 
-    public void setAbcd(int[] abcd) {
+    public void setAbcd(double[] abcd) {
         this.abcd = abcd;
     }
 

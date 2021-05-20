@@ -60,7 +60,7 @@ public class FxUserInterfaceController implements Initializable {
     public void addSet() {
         TraitListItem selectedTrait = ((TraitListItem) traitsListView.getSelectionModel().getSelectedItem());
         if(selectedTrait != null){
-            selectedTrait.getSets().add(new FuzzySet(new int[]{1, 2, 3, 4}, "Nowy set"));
+            selectedTrait.getSets().add(new FuzzySet(new double[]{1, 2, 3, 4}, "Nowy set"));
         }
         refreshFuzzySetsList();
     }
@@ -96,17 +96,17 @@ public class FxUserInterfaceController implements Initializable {
     public void saveChangesToSet() {
         if(selectedSet != null) {
             selectedSet.setLabel(nameField.getText());
-            int[] abcd;
+            double[] abcd;
             if (isNumeric(dField.getText())) {
-                abcd = new int[4];
-                abcd[3] = Integer.parseInt(dField.getText());
+                abcd = new double[4];
+                abcd[3] = Double.parseDouble(dField.getText());
             }
             else{
-                abcd = new int[3];
+                abcd = new double[3];
             }
-            abcd[0] = Integer.parseInt(aField.getText());
-            abcd[1] = Integer.parseInt(bField.getText());
-            abcd[2] = Integer.parseInt(cField.getText());
+            abcd[0] = Double.parseDouble(aField.getText());
+            abcd[1] = Double.parseDouble(bField.getText());
+            abcd[2] = Double.parseDouble(cField.getText());
             selectedSet.setAbcd(abcd);
             refreshFuzzySetsList();
         }
@@ -117,5 +117,6 @@ public class FxUserInterfaceController implements Initializable {
         //calculator.setTraits();
         //calculator.setRelativeQuantifiers();
         //calculator.setAbsoluteQuantifiers();
+        //refreshTraitsList();
     }
 }
