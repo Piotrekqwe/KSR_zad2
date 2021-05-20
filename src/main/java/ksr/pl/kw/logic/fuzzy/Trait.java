@@ -1,19 +1,29 @@
 package ksr.pl.kw.logic.fuzzy;
 
-public class Trait {
-    private final TraitId id;
-    private final FuzzySet set;
+import java.io.Serializable;
+import java.util.ArrayList;
 
-    public Trait(TraitId id, FuzzySet set) {
+public class Trait implements Serializable, TraitListItem {
+    private final TraitId id;
+    private final ArrayList<FuzzySet> fuzzySets;
+
+    public Trait(TraitId id, ArrayList<FuzzySet> sets) {
         this.id = id;
-        this.set = set;
+        this.fuzzySets = sets;
     }
 
     public TraitId getId() {
         return id;
     }
 
-    public FuzzySet getSet() {
-        return set;
+    @Override
+    public ArrayList<FuzzySet> getSets() {
+        return fuzzySets;
     }
+
+    @Override
+    public String toString() {
+        return id.uiName;
+    }
+
 }

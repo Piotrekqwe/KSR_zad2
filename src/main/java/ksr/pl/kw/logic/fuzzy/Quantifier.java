@@ -1,19 +1,32 @@
 package ksr.pl.kw.logic.fuzzy;
 
-public class Quantifier {
-    private FuzzySet set;
-    private String label;
+import java.io.Serializable;
+import java.util.ArrayList;
 
-    public Quantifier(FuzzySet set, String label) {
-        this.set = set;
-        this.label = label;
+public class Quantifier implements Serializable, TraitListItem {
+    private String title;
+    private ArrayList<FuzzySet> fuzzySets;
+    public static String RELATIVE_QUANTIFIERS_NAME = "Kwantyfikatory Względne";
+    public static String ABSOLUTE_QUANTIFIERS_NAME = "Kwantyfikatory Absolutne";
+
+    public Quantifier(String title, ArrayList<FuzzySet> sets) {
+        this.fuzzySets = sets;
+        this.title = title;
     }
 
-    public FuzzySet getSet() {
-        return set;
+    public String getTitle() {
+        return title;
     }
 
-    public String getLabel() {
-        return label;
+    @Override
+    public ArrayList<FuzzySet> getSets() {
+        return fuzzySets;
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
+
+
 }
