@@ -45,7 +45,7 @@
                             </rowConstraints>
                             <children>
                                 <ListView fx:id="traitsListView" onMouseClicked="#refreshFuzzySetsList" prefHeight="200.0" prefWidth="200.0" />
-                                <ListView fx:id="fuzzySetsListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
+                                <ListView fx:id="fuzzySetsListView" onMouseClicked="#modifySet" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
                         <GridPane GridPane.rowIndex="2">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -59,7 +59,6 @@
                            <children>
                               <Button mnemonicParsing="false" onAction="#addSet" text="Dodaj Set" GridPane.halignment="CENTER" />
                               <Button mnemonicParsing="false" onAction="#removeSet" text="Usuń Set" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                              <Button mnemonicParsing="false" onAction="#modifySet" text="Modyfikuj Set" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                               <Button mnemonicParsing="false" onAction="#loadDefaultValues" text="Wczytaj Domyślne Wartości" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>

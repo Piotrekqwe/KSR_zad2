@@ -5,6 +5,8 @@ import ksr.pl.kw.logic.fuzzy.Trait;
 import ksr.pl.kw.logic.fuzzy.TraitId;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.stream.Collectors;
 
 
 public class Calculator {
-    private List<Trait> traits;
+    private ArrayList<Trait> traits;
     private Quantifier relativeQuantifiers;
     private Quantifier absoluteQuantifiers;
     public static String TRAIT_FILE_PATH = "data\\traits.bin";
@@ -22,12 +24,12 @@ public class Calculator {
     public Calculator() {
         if (new File(TRAIT_FILE_PATH).exists()) {
             try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(TRAIT_FILE_PATH))) {
-                traits = (List<Trait>) in.readObject();
+                traits = (ArrayList<Trait>) in.readObject();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            traits = Arrays.stream(TraitId.values()).map(id -> new Trait(id, new ArrayList<>())).collect(Collectors.toList());
+            traits = (ArrayList<Trait>) Arrays.stream(TraitId.values()).map(id -> new Trait(id, new ArrayList<>())).collect(Collectors.toList());
         }
         if (new File(RELATIVE_QUANTIFIERS_PATH).exists()) {
             try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(RELATIVE_QUANTIFIERS_PATH))) {
@@ -79,7 +81,7 @@ public class Calculator {
         return absoluteQuantifiers;
     }
 
-    public void setTraits(List<Trait> traits) {
+    public void setTraits(ArrayList<Trait> traits) {
         this.traits = traits;
     }
 
@@ -89,5 +91,17 @@ public class Calculator {
 
     public void setAbsoluteQuantifiers(Quantifier absoluteQuantifiers) {
         this.absoluteQuantifiers = absoluteQuantifiers;
+    }
+
+    public static String[][] readFromFile(String dirPath, String fileName, String separator){
+        String[] rows;
+        String[][] values = null;
+        try {
+            rows = Files.readString(Paths.get(dirPath + fileName)).split("[" + "\n" + "]");
+            values = Arrays.stream(rows).skip(1).map(row -> row.split("[" + separator + "]")).toArray(String[][]::new);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return values;
     }
 }
