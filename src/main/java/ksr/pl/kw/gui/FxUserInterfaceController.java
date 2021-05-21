@@ -1,10 +1,8 @@
 package ksr.pl.kw.gui;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import ksr.pl.kw.logic.Calculator;
 import ksr.pl.kw.logic.fuzzy.FuzzySet;
 import ksr.pl.kw.logic.fuzzy.Trait;
