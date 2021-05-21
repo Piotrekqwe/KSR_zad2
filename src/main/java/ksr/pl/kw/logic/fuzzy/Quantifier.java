@@ -6,8 +6,8 @@ import java.util.ArrayList;
 public class Quantifier implements Serializable, TraitListItem {
     private String title;
     private ArrayList<FuzzySet> fuzzySets;
-    public static String RELATIVE_QUANTIFIERS_NAME = "Kwantyfikatory Względne";
-    public static String ABSOLUTE_QUANTIFIERS_NAME = "Kwantyfikatory Absolutne";
+    public static final String RELATIVE_QUANTIFIERS_NAME = "Kwantyfikatory Względne";
+    public static final String ABSOLUTE_QUANTIFIERS_NAME = "Kwantyfikatory Absolutne";
 
     public Quantifier(String title, ArrayList<FuzzySet> sets) {
         this.fuzzySets = sets;

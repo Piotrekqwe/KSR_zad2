@@ -2,14 +2,15 @@ package ksr.pl.kw.gui;
 
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import ksr.pl.kw.logic.Calculator;
 import ksr.pl.kw.logic.fuzzy.*;
 import ksr.pl.kw.logic.tank.TankRepository;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import static org.apache.commons.lang3.StringUtils.isNumeric;
@@ -20,6 +21,16 @@ public class FxUserInterfaceController implements Initializable {
     public static Calculator calculator;
     TankRepository tankRepository;
     FuzzySet selectedSet;
+
+
+    public ListView quantifierListView;
+    public ListView summarizerListView;
+    public ListView summarizerFuzzySetsListView;
+    public ListView qualifierListView;
+    public ListView qualifierFuzzySetsListView;
+    public ToggleGroup quantifierTypeToggleGroup;
+    public RadioButton relativeQuantifierToggle;
+    public RadioButton absoluteQuantifierToggle;
 
     public ListView traitsListView;
     public ListView fuzzySetsListView;
@@ -34,8 +45,24 @@ public class FxUserInterfaceController implements Initializable {
         tankRepository = new TankRepository();
         calculator = new Calculator();
         refreshTraitsList();
+        refreshQuantifierList();
+        fillVariableList(summarizerListView);
+        fillVariableList(qualifierListView);
     }
 
+    private static final String TANK_TYPE_QUALIFIER = "typ czołgu";
+    private static final String TIER_QUALIFIER = "tier";
+    private static final String NATION_QUALIFIER = "kraj";
+
+    private void fillVariableList(ListView variableListView){
+        variableListView.getItems().add(TANK_TYPE_QUALIFIER);
+        variableListView.getItems().add(TIER_QUALIFIER);
+        variableListView.getItems().add(NATION_QUALIFIER);
+        for (Trait trait : calculator.getTraits()) {
+            variableListView.getItems().add(trait);
+        }
+    }
+    
     private void refreshTraitsList() {
         traitsListView.getItems().removeAll(traitsListView.getItems());
         for (Trait trait : calculator.getTraits()) {
@@ -122,7 +149,6 @@ public class FxUserInterfaceController implements Initializable {
 
         Quantifier relativeQuantifiers = null;
         Quantifier absoluteQuantifiers = null;
-
         for (int i = 0; i < 2; i++) {
             String[][] table = Calculator.readFromFile("./src/main/resources/labels_default_values/", (i == 0) ? "absolute.csv" : "relative.csv", ",");
             ArrayList<FuzzySet> fuzzySets = getFuzzySets(table);
@@ -152,4 +178,22 @@ public class FxUserInterfaceController implements Initializable {
         }
         return fuzzySets;
     }
+
+    public void refreshQuantifierList() {
+        Quantifier selectedQuantifier;
+        if(quantifierTypeToggleGroup.getSelectedToggle() == relativeQuantifierToggle){
+            selectedQuantifier = calculator.getRelativeQuantifiers();
+        }
+        else {
+            selectedQuantifier = calculator.getAbsoluteQuantifiers();
+        }
+
+        if (selectedQuantifier != null) {
+            quantifierListView.getItems().removeAll(quantifierListView.getItems());
+            for (FuzzySet set : selectedQuantifier.getSets()) {
+                quantifierListView.getItems().add(set);
+            }
+        }
+    }
+
 }
