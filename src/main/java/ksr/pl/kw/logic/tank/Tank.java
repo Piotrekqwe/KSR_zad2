@@ -1,15 +1,17 @@
 package ksr.pl.kw.logic.tank;
 
-import java.util.Arrays;
+import ksr.pl.kw.logic.fuzzy.TraitId;
+
+import java.util.EnumMap;
 
 public class Tank {
-    private TraitValue[] traits;
+    private EnumMap<TraitId, Double> traits;
     private TankType tankType;
     private int tier;
     private String nation;
     private String name;
 
-    public Tank(TraitValue[] traits, TankType tankType, int tier, String nation, String name) {
+    public Tank(EnumMap<TraitId, Double> traits, TankType tankType, int tier, String nation, String name) {
         this.traits = traits;
         this.tankType = tankType;
         this.tier = tier;
@@ -17,10 +19,30 @@ public class Tank {
         this.name = name;
     }
 
+    public EnumMap<TraitId, Double> getTraits() {
+        return traits;
+    }
+
+    public TankType getTankType() {
+        return tankType;
+    }
+
+    public int getTier() {
+        return tier;
+    }
+
+    public String getNation() {
+        return nation;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return "Tank{" +
-                "traits=" + Arrays.toString(traits) +
+                "traits=" + traits +
                 ", tankType=" + tankType +
                 ", tier=" + tier +
                 ", nation='" + nation + '\'' +

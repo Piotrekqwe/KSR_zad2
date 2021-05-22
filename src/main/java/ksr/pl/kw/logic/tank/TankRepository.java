@@ -5,6 +5,9 @@ import ksr.pl.kw.logic.fuzzy.TraitId;
 import java.awt.image.BandedSampleModel;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Map;
 
 public class TankRepository {
 
@@ -59,7 +62,7 @@ public class TankRepository {
     }
 
 
-    public ArrayList<Tank> getAllTanks(){
+    public HashSet<Tank> getAllTanks(){
 
         String query = "select short_name, tier, tank_type, nation, price_credit, hp, hull_hp, tank_weight, " +
                 "speed_forward, speed_backward, ammo_avg_penetration, ammo_avg_damage, dpm, gun_fire_rate, " +
@@ -68,7 +71,7 @@ public class TankRepository {
         return sendQueryToDataBase(query);
     }
 
-    public ArrayList<Tank> getTanksByType(TankType tankType){
+    public HashSet<Tank> getTanksByType(TankType tankType){
 
         String query = "select short_name, tier, tank_type, nation, price_credit, hp, hull_hp, tank_weight, " +
                 "speed_forward, speed_backward, ammo_avg_penetration, ammo_avg_damage, dpm, gun_fire_rate, " +
@@ -77,7 +80,7 @@ public class TankRepository {
         return sendQueryToDataBase(query);
     }
 
-    public ArrayList<Tank> getTanksByNation(String nation){
+    public HashSet<Tank> getTanksByNation(String nation){
 
         String query = "select short_name, tier, tank_type, nation, price_credit, hp, hull_hp, tank_weight, " +
                 "speed_forward, speed_backward, ammo_avg_penetration, ammo_avg_damage, dpm, gun_fire_rate, " +
@@ -86,7 +89,7 @@ public class TankRepository {
         return sendQueryToDataBase(query);
     }
 
-    public ArrayList<Tank> getTanksByTier(int tier){
+    public HashSet<Tank> getTanksByTier(int tier){
 
         String query = "select short_name, tier, tank_type, nation, price_credit, hp, hull_hp, tank_weight, " +
                 "speed_forward, speed_backward, ammo_avg_penetration, ammo_avg_damage, dpm, gun_fire_rate, " +
@@ -95,7 +98,7 @@ public class TankRepository {
         return sendQueryToDataBase(query);
     }
 
-    public ArrayList<Tank> getTanksByTrait(TraitId id, int ammount, boolean asc){
+    public HashSet<Tank> getTanksByTrait(TraitId id, int ammount, boolean asc){
 
         String query = "select short_name, tier, tank_type, nation, price_credit, hp, hull_hp, tank_weight, " +
                 "speed_forward, speed_backward, ammo_avg_penetration, ammo_avg_damage, dpm, gun_fire_rate, " +
@@ -104,12 +107,12 @@ public class TankRepository {
         return sendQueryToDataBase(query);
     }
 
-    private ArrayList<Tank> sendQueryToDataBase(String query){
+    private HashSet<Tank> sendQueryToDataBase(String query){
 
         connect(url);
         Statement statement;
         ResultSet resultSet;
-        ArrayList<Tank> tanksList = new ArrayList<>();
+        HashSet<Tank> tanksSet = new HashSet<>();
 
         try{
             statement = connection.createStatement();
@@ -117,16 +120,13 @@ public class TankRepository {
 
             while(resultSet.next()){
 
-                TraitValue[] traitValues = new TraitValue[12];
-                for(int i=0; i<12; i++){
-                    traitValues[i] = new TraitValue(
-                            TraitId.valueOfLabel(resultSet.getMetaData().getColumnLabel(i+5)),
-                            resultSet.getFloat(i+5)
-                    );
-                }
+                EnumMap<TraitId, Double> traits = new EnumMap<>(TraitId.class);
 
-                tanksList.add(new Tank(
-                        traitValues,
+                for(int i=0; i<12; i++){
+                    traits.put(TraitId.valueOfLabel(resultSet.getMetaData().getColumnLabel(i+5)), (double) resultSet.getFloat(i+5));
+                }
+                tanksSet.add(new Tank(
+                        traits,
                         TankType.valueOfLabel(resultSet.getString(3)),
                         resultSet.getInt(2),
                         resultSet.getString(4),
@@ -139,8 +139,8 @@ public class TankRepository {
         }
         disconnect();
 
-        //Tank[] tab = tanksList.toArray(new Tank[tanksList.size()]);
-        return tanksList;
+        //Tank[] tab = tanksSet.toArray(new Tank[tanksSet.size()]);
+        return tanksSet;
 
     }
 

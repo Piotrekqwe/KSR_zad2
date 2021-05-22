@@ -29,9 +29,36 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <ListView fx:id="quantifierListView" prefHeight="200.0" prefWidth="200.0"/>
-                                <ListView fx:id="qualifierListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2"/>
-                                <ListView fx:id="summarizerListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1"/>
+                                <ListView fx:id="quantifierListView" prefHeight="200.0" prefWidth="200.0">
+                                    <GridPane.margin>
+                                        <Insets top="15.0"/>
+                                    </GridPane.margin>
+                                </ListView>
+                                <ListView fx:id="qualifierListView" onMouseClicked="#refreshQualifierSetsListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+                                    <GridPane.margin>
+                                        <Insets top="15.0"/>
+                                    </GridPane.margin>
+                                </ListView>
+                                <ListView fx:id="summarizerListView" onMouseClicked="#refreshSummarizerSetsListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                    <GridPane.margin>
+                                        <Insets top="15.0"/>
+                                    </GridPane.margin>
+                                </ListView>
+                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lista Sumaryzatorów" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lista Kwalifikatorów" GridPane.rowIndex="2" GridPane.valignment="TOP">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lista Kwantyfikatorów" GridPane.valignment="TOP">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
                             </children>
                         </GridPane>
                         <GridPane GridPane.columnIndex="1">
@@ -69,8 +96,96 @@
                                         </RadioButton>
                                     </children>
                                 </GridPane>
-                                <ListView fx:id="qualifierFuzzySetsListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2"/>
-                                <ListView fx:id="summarizerFuzzySetsListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3"/>
+                                <ListView fx:id="summarizerFuzzySetsListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2"/>
+                                <ListView fx:id="qualifierFuzzySetsListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3"/>
+                                <GridPane GridPane.rowIndex="1">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                    <children>
+                                        <Button mnemonicParsing="false" onAction="#oneSubjectSummary" text="Wygeneruj podsumowanie" GridPane.halignment="CENTER"/>
+                                        <TextArea fx:id="summaryDisplayField" editable="false" prefHeight="200.0" prefWidth="200.0" text="Miejsce do wyświetlania podsumowań" wrapText="true" GridPane.rowIndex="1"/>
+                                    </children>
+                                </GridPane>
+                            </children>
+                        </GridPane>
+                        <GridPane GridPane.columnIndex="2">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <Text fx:id="t1Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T1 = ">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text fx:id="t2Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T2 = " GridPane.rowIndex="1">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text fx:id="t3Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T3 = " GridPane.rowIndex="2">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text fx:id="t4Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T4 = " GridPane.rowIndex="3">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text fx:id="t5Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T5 = " GridPane.rowIndex="4">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text fx:id="t6Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T6 = " GridPane.rowIndex="5">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text fx:id="t7Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T7 = " GridPane.rowIndex="6">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text fx:id="t8Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T8 = " GridPane.rowIndex="7">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text fx:id="t9Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T9 = " GridPane.rowIndex="8">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text fx:id="t10Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T10 = " GridPane.rowIndex="9">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
+                                <Text fx:id="t11Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T11 = " GridPane.rowIndex="10">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Text>
                             </children>
                         </GridPane>
                     </children>
