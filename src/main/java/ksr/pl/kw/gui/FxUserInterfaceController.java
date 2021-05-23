@@ -298,7 +298,7 @@ public class FxUserInterfaceController implements Initializable {
 
             double[] result = calculator.oneSubjectSummary(tanks, quantifierIsRelative, quantifierSet, summarizerId, summarizerSet, qualifierId, qualifierSet, weights);
 
-            t0Dusplay.setText("T1 = " + df4.format(result[0]));
+            t0Dusplay.setText("T = " + df4.format(result[0]));
             t1Dusplay.setText("T1 = " + df4.format(result[1]));
             t2Dusplay.setText("T2 = " + df4.format(result[2]));
             t3Dusplay.setText("T3 = " + df4.format(result[3]));
