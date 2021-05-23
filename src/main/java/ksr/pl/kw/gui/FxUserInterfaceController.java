@@ -151,10 +151,11 @@ public class FxUserInterfaceController implements Initializable {
         if (selectedQualifier != null) {
             if (selectedQualifier instanceof Trait) {
                 qualifierFuzzySetsListView.getItems().removeAll(qualifierFuzzySetsListView.getItems());
-                for (FuzzySet set : ((Trait) selectedQualifier).getSets()) {
+                for (FuzzySet set : ((Trait)selectedQualifier).getSets()) {
                     qualifierFuzzySetsListView.getItems().add(set);
                 }
-            } else {
+            }
+            else{
                 qualifierFuzzySetsListView.getItems().removeAll(qualifierFuzzySetsListView.getItems());
             }
         }
@@ -259,7 +260,6 @@ public class FxUserInterfaceController implements Initializable {
     }
 
     private static final DecimalFormat df4 = new DecimalFormat("#.####");
-
     public void oneSubjectSummary() {
         es.submit(() -> {
             String summary = ((FuzzySet) quantifierListView.getSelectionModel().getSelectedItem()).getLabel() + " czołgów";
@@ -313,89 +313,91 @@ public class FxUserInterfaceController implements Initializable {
         });
     }
 
-//    public void multipleOneSubjectSummaries() {
-//        es.submit(() -> {
-//            double[] weights = new double[11];
-//            weights[0] = Double.parseDouble(t1WeightField.getText());
-//            weights[1] = Double.parseDouble(t2WeightField.getText());
-//            weights[2] = Double.parseDouble(t3WeightField.getText());
-//            weights[3] = Double.parseDouble(t4WeightField.getText());
-//            weights[4] = Double.parseDouble(t5WeightField.getText());
-//            weights[5] = Double.parseDouble(t6WeightField.getText());
-//            weights[6] = Double.parseDouble(t7WeightField.getText());
-//            weights[7] = Double.parseDouble(t8WeightField.getText());
-//            weights[8] = Double.parseDouble(t9WeightField.getText());
-//            weights[9] = Double.parseDouble(t10WeightField.getText());
-//            weights[10] = Double.parseDouble(t11WeightField.getText());
-//
-//            HashSet<Tank> tanks = tankRepository.getAllTanks();
-//            TraitId summarizerId = ((Trait) summarizerListView.getSelectionModel().getSelectedItem()).getId();
-//            Object selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
-//            Quantifier selectedQuantifier;
-//            boolean quantifierIsRelative = false;
-//            TraitId summarizerTraitId = ((Trait) summarizerListView.getSelectionModel().getSelectedItem()).getId();
-//            //TraitId qualifierTraitId = ((Trait) qualifierListView.getSelectionModel().getSelectedItem()).getId();
-//
-//            try (FileWriter writer = new FileWriter("summaries.txt");
-//                 BufferedWriter bw = new BufferedWriter(writer)) {
-//                bw.write("summary$T$T1$T2$T3$T4$T5$T6$T7$T8$T9$T10$T11$\n");
-//                if (quantifierTypeToggleGroup.getSelectedToggle() == relativeQuantifierToggle) {
-//                    selectedQuantifier = calculator.getRelativeQuantifiers();
-//                    quantifierIsRelative = true;
-//                } else {
-//                    selectedQuantifier = calculator.getAbsoluteQuantifiers();
-//                }
-//                boolean finalQuantifierIsRelative = quantifierIsRelative;
-//                selectedQuantifier.getSets().forEach(quantifierSet -> {
-//                    summarizerFuzzySetsListView.getItems().forEach(summarizerConsumer -> {
-//                        FuzzySet summarizerSet = (FuzzySet) summarizerConsumer;
-//                        if (selectedQualifier instanceof Trait) {
-//                            TraitId qualifierId = ((Trait) selectedQualifier).getId();
-//                            qualifierFuzzySetsListView.getItems().forEach(qualifierConsumer -> {
-//                                FuzzySet qualifierSet = (FuzzySet) qualifierConsumer;
-//                                try {
-//                                    bw.write(multipleOneSubjectSummariesIteration(tanks, finalQuantifierIsRelative, quantifierSet,
-//                                            summarizerId, summarizerSet, qualifierId, qualifierSet, weights));
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            });
-//                        } else {
-//                            try {
-//                                bw.write(multipleOneSubjectSummariesIteration(tanks, finalQuantifierIsRelative, quantifierSet,
-//                                        summarizerId, summarizerSet, null, null, weights));
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    });
-//                });
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//
-//    }
-//    private String multipleOneSubjectSummariesIteration(HashSet<Tank> tanks, boolean quantifierIsRelative, FuzzySet quantifierSet,
-//                                                        TraitId summarizerId, FuzzySet summarizerSet,
-//                                                        TraitId qualifierId, FuzzySet qualifierSet, double[] weights){
-//        String summary = quantifierSet + " czołgów";
-//        double[] qualifierAbcd = null;
-//        if (qualifierSet != null) {
-//            summary += " których " + qualifierId + " jest " + qualifierSet + ',';
-//            qualifierAbcd = qualifierSet.getAbcd();
-//        }
-//        summary += " ma " + summarizerSet + ' ' + summarizerId;
-//        StringBuilder line = new StringBuilder(summary);
-//
-//        double[] result = calculator.oneSubjectSummary(tanks, quantifierIsRelative, quantifierSet.getAbcd(),
-//                summarizerId, summarizerSet.getAbcd(), qualifierId, qualifierAbcd, weights);
-//
-//        for(double tx : result){
-//            line.append('$').append(df4.format(tx));
-//        }
-//
-//        return line.toString();
-//    }
-//
+    public void multipleOneSubjectSummaries() {
+        es.submit(() -> {
+            summarizationTimerDisplay.setText("trwa podsumowywanie");
+            double[] weights = new double[11];
+            weights[0] = Double.parseDouble(t1WeightField.getText());
+            weights[1] = Double.parseDouble(t2WeightField.getText());
+            weights[2] = Double.parseDouble(t3WeightField.getText());
+            weights[3] = Double.parseDouble(t4WeightField.getText());
+            weights[4] = Double.parseDouble(t5WeightField.getText());
+            weights[5] = Double.parseDouble(t6WeightField.getText());
+            weights[6] = Double.parseDouble(t7WeightField.getText());
+            weights[7] = Double.parseDouble(t8WeightField.getText());
+            weights[8] = Double.parseDouble(t9WeightField.getText());
+            weights[9] = Double.parseDouble(t10WeightField.getText());
+            weights[10] = Double.parseDouble(t11WeightField.getText());
+
+            HashSet<Tank> tanks = tankRepository.getAllTanks();
+            TraitId summarizerId = ((Trait) summarizerListView.getSelectionModel().getSelectedItem()).getId();
+            Object selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
+            Quantifier selectedQuantifier;
+            boolean quantifierIsRelative = false;
+            TraitId summarizerTraitId = ((Trait) summarizerListView.getSelectionModel().getSelectedItem()).getId();
+            //TraitId qualifierTraitId = ((Trait) qualifierListView.getSelectionModel().getSelectedItem()).getId();
+
+            try (FileWriter writer = new FileWriter("summaries.txt");
+                 BufferedWriter bw = new BufferedWriter(writer)) {
+                bw.write("summary$T$T1$T2$T3$T4$T5$T6$T7$T8$T9$T10$T11$\n");
+                if (quantifierTypeToggleGroup.getSelectedToggle() == relativeQuantifierToggle) {
+                    selectedQuantifier = calculator.getRelativeQuantifiers();
+                    quantifierIsRelative = true;
+                } else {
+                    selectedQuantifier = calculator.getAbsoluteQuantifiers();
+                }
+                boolean finalQuantifierIsRelative = quantifierIsRelative;
+                selectedQuantifier.getSets().forEach(quantifierSet -> {
+                    summarizerFuzzySetsListView.getItems().forEach(summarizerConsumer -> {
+                        FuzzySet summarizerSet = (FuzzySet) summarizerConsumer;
+                        if (selectedQualifier instanceof Trait) {
+                            TraitId qualifierId = ((Trait) selectedQualifier).getId();
+                            qualifierFuzzySetsListView.getItems().forEach(qualifierConsumer -> {
+                                FuzzySet qualifierSet = (FuzzySet) qualifierConsumer;
+                                try {
+                                    bw.write(multipleOneSubjectSummariesIteration(tanks, finalQuantifierIsRelative, quantifierSet,
+                                            summarizerId, summarizerSet, qualifierId, qualifierSet, weights));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        } else {
+                            try {
+                                bw.write(multipleOneSubjectSummariesIteration(tanks, finalQuantifierIsRelative, quantifierSet,
+                                        summarizerId, summarizerSet, null, null, weights));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            summarizationTimerDisplay.setText("zakończone");
+        });
+
+    }
+    private String multipleOneSubjectSummariesIteration(HashSet<Tank> tanks, boolean quantifierIsRelative, FuzzySet quantifierSet,
+                                                        TraitId summarizerId, FuzzySet summarizerSet,
+                                                        TraitId qualifierId, FuzzySet qualifierSet, double[] weights){
+        String summary = quantifierSet + " czołgów";
+        double[] qualifierAbcd = null;
+        if (qualifierSet != null) {
+            summary += " których " + qualifierId + " jest " + qualifierSet + ',';
+            qualifierAbcd = qualifierSet.getAbcd();
+        }
+        summary += " ma " + summarizerSet + ' ' + summarizerId;
+        StringBuilder line = new StringBuilder(summary);
+
+        double[] result = calculator.oneSubjectSummary(tanks, quantifierIsRelative, quantifierSet.getAbcd(),
+                summarizerId, summarizerSet.getAbcd(), qualifierId, qualifierAbcd, weights);
+
+        for(double tx : result){
+            line.append('$').append(df4.format(tx));
+        }
+        line.append('\n');
+        return line.toString();
+    }
+
 }
