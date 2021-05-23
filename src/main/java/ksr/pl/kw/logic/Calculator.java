@@ -1,5 +1,6 @@
 package ksr.pl.kw.logic;
 
+import ksr.pl.kw.logic.fuzzy.FuzzySet;
 import ksr.pl.kw.logic.fuzzy.Quantifier;
 import ksr.pl.kw.logic.fuzzy.Trait;
 import ksr.pl.kw.logic.fuzzy.TraitId;
@@ -9,7 +10,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -69,7 +69,7 @@ public class Calculator {
         }
     }
 
-    public List<Trait> getTraits() {
+    public ArrayList<Trait> getTraits() {
         return traits;
     }
     public Quantifier getRelativeQuantifiers() {
@@ -88,6 +88,14 @@ public class Calculator {
         this.absoluteQuantifiers = absoluteQuantifiers;
     }
 
+    public Trait getTraitById(TraitId id){
+        for(Trait trait : traits) {
+            if (trait.getId() == id) {
+                return trait;
+            }
+        }
+        return null;
+    }
     public static double belong(double value, double[] abcd){
         if(value < abcd[0] || value > abcd[abcd.length - 1]) return 0;
         if(value < abcd[1]) return (value - abcd[0]) / (abcd[1] - abcd[0]);
@@ -120,12 +128,19 @@ public class Calculator {
     private boolean supp(double value, double[] set){
         return (value > set[0] && value < set[set.length - 1]);
     }
-    private double t2(HashSet<Tank> tanks, TraitId[] summarizerIds, double[][] summarizerSets){
-        int[] sup = new int[summarizerIds.length];
-        for(int i = 0; i < summarizerIds.length; i++){
+    private double suppSet(HashSet<Tank> tanks, TraitId id, double[] abcd){
+        int resoult = 0;
+        for(Tank tank : tanks){
+            if(supp(tank.getTraits().get(id), abcd)) resoult++;
+        }
+        return (double) resoult / tanks.size();
+    }
+    private double t2_t9(HashSet<Tank> tanks, TraitId[] ids, double[][] sets){
+        int[] sup = new int[ids.length];
+        for(int i = 0; i < ids.length; i++){
             for(Tank tank : tanks){
-                double val = tank.getTraits().get(summarizerIds[i]);
-                if(supp(val, summarizerSets[i])) sup[i]++;
+                double val = tank.getTraits().get(ids[i]);
+                if(supp(val, sets[i])) sup[i]++;
             }
         }
         double result = 1;
@@ -135,6 +150,7 @@ public class Calculator {
 
         return 1 - result;
     }
+    //nie jestem pewien czy t3 działa dobrze dla wielu sumatorów
     private double t3(HashSet<Tank> tanks, TraitId[] summarizerIds, double[][] summarizerSets, TraitId qualifierId, double[] qualifierSet){
         HashSet<Tank> remainingTanks = (HashSet<Tank>) tanks.clone();
         if(qualifierId != null){
@@ -162,22 +178,82 @@ public class Calculator {
 
         return (double)remainingTanks.size()/M;
     }
+    //nie jestem pewien czy t4 działa dobrze dla wielu sumatorów
+    private double t4(HashSet<Tank> tanks, TraitId[] summarizerIds, double t3){
+        double resoult = 1;
+        for(TraitId id : summarizerIds){
+            for(FuzzySet set : getTraitById(id).getSets()){
+                resoult *= suppSet(tanks, id, set.getAbcd());
+            }
+        }
+        return Math.abs(resoult - t3);
+    }
+    private double t5_11(TraitId[] summarizerIds){
+        double resoult = 2;
+        for(TraitId id : summarizerIds)
+            for(FuzzySet set : getTraitById(id).getSets())
+                resoult /= 2;
+        return resoult;
+    }
+    private double t6(int setSize, boolean quantifierIsRelative, double[] quantifierSet){
+        double resoult = quantifierSet[quantifierSet.length - 1] - quantifierSet[0];
+        if(quantifierIsRelative){
+            return resoult;
+        }
+        else{
+            return resoult / setSize;
+        }
+    }
+    private double t7(int setSize, boolean quantifierIsRelative, double[] quantifierSet){
+        double resoult = 0;
+        resoult += quantifierSet[1] - quantifierSet[0] / 2;
+        resoult += quantifierSet[quantifierSet.length - 1] - quantifierSet[quantifierSet.length - 2] / 2;
+        resoult += quantifierSet[quantifierSet.length - 2] - quantifierSet[1];
+        if(!quantifierIsRelative) resoult /= setSize;
+        return resoult;
+    }
+    private double t8_t10(HashSet<Tank> tanks, TraitId[] summarizerIds, double[][] summarizerSets){
+        double[] sup = new double[summarizerIds.length];
+        for(int i = 0; i < summarizerIds.length; i++){
+            for(Tank tank : tanks){
+                double val = tank.getTraits().get(summarizerIds[i]);
+                sup[i] += belong(val, summarizerSets[i]);
+            }
+        }
+        double result = 1;
+        for(double s : sup) result *= s;
+        result = Math.pow(result, (double) 1 / sup.length);
+        result /= tanks.size();
 
+        return 1 - result;
+    }
     public double[] oneSubjectSummary(HashSet<Tank> tanks, boolean quantifierIsRelative, double[] quantifierSet,
                                       TraitId summarizerId, double[] summarizerSet,
                                       TraitId qualifierId, double[] qualifierSet) {
         double[] result = new double[11];
 
-        double[] t1Values = null;
+        double[] t1Values;
         if (qualifierId == null) {
             t1Values = t1form1(tanks, quantifierIsRelative, summarizerId, summarizerSet);
+            result[8] = 0;
+            result[9] = 0;
+            result[10] = 0;
         }
         else{
             t1Values = t1form2(tanks, summarizerId, summarizerSet, qualifierId, qualifierSet);
+            result[8] = t2_t9(tanks, new TraitId[]{qualifierId}, new double[][]{qualifierSet});
+            result[9] = t8_t10(tanks, new TraitId[]{qualifierId}, new double[][]{qualifierSet});
+            result[10] = t5_11(new TraitId[]{qualifierId});
         }
         result[0] = belong(t1Values[0] / t1Values[1], quantifierSet);
-        result[1] = t2(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet});
+        result[1] = t2_t9(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet});
         result[2] = t3(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet}, qualifierId, qualifierSet);
+        result[3] = t4(tanks, new TraitId[]{summarizerId}, result[2]);
+        result[4] = t5_11(new TraitId[]{summarizerId});
+        result[5] = t6(tanks.size(), quantifierIsRelative, quantifierSet);
+        result[6] = t7(tanks.size(), quantifierIsRelative, quantifierSet);
+        result[7] = t8_t10(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet});
+
         return result;
     }
 

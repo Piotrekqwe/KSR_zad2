@@ -22,6 +22,9 @@ public class FxUserInterfaceController implements Initializable {
     public static Calculator calculator;
     TankRepository tankRepository;
     FuzzySet selectedSet;
+    //private static final String TANK_TYPE_QUALIFIER = "typ czołgu";
+    //private static final String TIER_QUALIFIER = "tier";
+    //private static final String NATION_QUALIFIER = "kraj";
 
 
     public ListView quantifierListView;
@@ -64,9 +67,6 @@ public class FxUserInterfaceController implements Initializable {
 
     private static final String ALL_TANKS_QUALIFIER = "brak kwalifikatora";
 
-    //private static final String TANK_TYPE_QUALIFIER = "typ czołgu";
-    //private static final String TIER_QUALIFIER = "tier";
-    //private static final String NATION_QUALIFIER = "kraj";
     private void refreshVariableLists() {
         summarizerListView.getItems().removeAll(summarizerListView.getItems());
         qualifierListView.getItems().removeAll(qualifierListView.getItems());
@@ -266,14 +266,14 @@ public class FxUserInterfaceController implements Initializable {
         t1Dusplay.setText("T1 = " + result[0]);
         t2Dusplay.setText("T2 = " + result[1]);
         t3Dusplay.setText("T3 = " + result[2]);
-        //t4Dusplay.setText("T4 = " + result[3]);
-        //t5Dusplay.setText("T5 = " + result[4]);
-        //t6Dusplay.setText("T6 = " + result[5]);
-        //t7Dusplay.setText("T7 = " + result[6]);
-        //t8Dusplay.setText("T8 = " + result[7]);
-        //t9Dusplay.setText("T9 = " + result[8]);
-        //t10Dusplay.setText("T10 = " + result[9]);
-        //t11Dusplay.setText("T11 = " + result[10]);
+        t4Dusplay.setText("T4 = " + result[3]);
+        t5Dusplay.setText("T5 = " + result[4]);
+        t6Dusplay.setText("T6 = " + result[5]);
+        t7Dusplay.setText("T7 = " + result[6]);
+        t8Dusplay.setText("T8 = " + result[7]);
+        t9Dusplay.setText("T9 = " + result[8]);
+        t10Dusplay.setText("T10 = " + result[9]);
+        t11Dusplay.setText("T11 = " + result[10]);
 
 
     }
