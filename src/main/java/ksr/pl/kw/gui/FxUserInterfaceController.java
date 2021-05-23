@@ -4,10 +4,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import ksr.pl.kw.logic.Calculator;
-import ksr.pl.kw.logic.MyUtils;
 import ksr.pl.kw.logic.fuzzy.*;
 import ksr.pl.kw.logic.tank.Tank;
-import ksr.pl.kw.logic.tank.TankRepository;
+import ksr.pl.kw.db.TankRepository;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -27,8 +26,8 @@ public class FxUserInterfaceController implements Initializable {
 
     public static final ExecutorService es = Executors.newFixedThreadPool(1);
     public static Calculator calculator;
-    TankRepository tankRepository;
-    FuzzySet selectedSet;
+    private TankRepository tankRepository;
+    private FuzzySet selectedSet;
     //private static final String TANK_TYPE_QUALIFIER = "typ czołgu";
     //private static final String TIER_QUALIFIER = "tier";
     //private static final String NATION_QUALIFIER = "kraj";
@@ -220,7 +219,7 @@ public class FxUserInterfaceController implements Initializable {
     public void loadDefaultValues() {
         ArrayList<Trait> traits = new ArrayList<>();
         for (TraitId id : TraitId.values()) {
-            String[][] table = MyUtils.readFromFile("./src/main/resources/labels_default_values/", id.dbName + ".csv", ",");
+            String[][] table = UiUtils.readFromFile("./src/main/resources/labels_default_values/", id.dbName + ".csv", ",");
             ArrayList<FuzzySet> fuzzySets = getFuzzySets(table);
             traits.add(new Trait(id, fuzzySets));
         }
@@ -228,7 +227,7 @@ public class FxUserInterfaceController implements Initializable {
         Quantifier relativeQuantifiers = null;
         Quantifier absoluteQuantifiers = null;
         for (int i = 0; i < 2; i++) {
-            String[][] table = MyUtils.readFromFile("./src/main/resources/labels_default_values/", (i == 0) ? "absolute.csv" : "relative.csv", ",");
+            String[][] table = UiUtils.readFromFile("./src/main/resources/labels_default_values/", (i == 0) ? "absolute.csv" : "relative.csv", ",");
             ArrayList<FuzzySet> fuzzySets = getFuzzySets(table);
             if (i == 0) {
                 absoluteQuantifiers = new Quantifier(Quantifier.ABSOLUTE_QUANTIFIERS_NAME, fuzzySets);

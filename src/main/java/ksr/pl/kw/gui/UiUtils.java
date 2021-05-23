@@ -1,11 +1,11 @@
-package ksr.pl.kw.logic;
+package ksr.pl.kw.gui;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-public class MyUtils {
+public class UiUtils {
 
     public static String[][] readFromFile(String dirPath, String fileName, String separator){
         String[] rows;

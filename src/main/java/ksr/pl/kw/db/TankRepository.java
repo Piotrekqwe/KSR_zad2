@@ -1,6 +1,8 @@
-package ksr.pl.kw.logic.tank;
+package ksr.pl.kw.db;
 
 import ksr.pl.kw.logic.fuzzy.TraitId;
+import ksr.pl.kw.logic.tank.Tank;
+import ksr.pl.kw.logic.tank.TankType;
 
 import java.awt.image.BandedSampleModel;
 import java.sql.*;

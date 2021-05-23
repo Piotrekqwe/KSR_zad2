@@ -16,6 +16,7 @@ public class Application extends javafx.application.Application {
         stage.setScene(new Scene(root, 1000, 600));
         stage.setOnCloseRequest(event -> {
             FxUserInterfaceController.calculator.save();
+            FxUserInterfaceController.es.shutdown();
         });
         stage.show();
     }
