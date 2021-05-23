@@ -229,31 +229,38 @@ public class Calculator {
     }
     public double[] oneSubjectSummary(HashSet<Tank> tanks, boolean quantifierIsRelative, double[] quantifierSet,
                                       TraitId summarizerId, double[] summarizerSet,
-                                      TraitId qualifierId, double[] qualifierSet) {
-        double[] result = new double[11];
+                                      TraitId qualifierId, double[] qualifierSet, double[] weights) {
+        double[] result = new double[12];
 
         double[] t1Values;
         if (qualifierId == null) {
             t1Values = t1form1(tanks, quantifierIsRelative, summarizerId, summarizerSet);
-            result[8] = 0;
             result[9] = 0;
-            result[10] = 0;
+            result[10]= 0;
+            result[11] = 0;
         }
         else{
             t1Values = t1form2(tanks, summarizerId, summarizerSet, qualifierId, qualifierSet);
-            result[8] = t2_t9(tanks, new TraitId[]{qualifierId}, new double[][]{qualifierSet});
-            result[9] = t8_t10(tanks, new TraitId[]{qualifierId}, new double[][]{qualifierSet});
-            result[10] = t5_11(new TraitId[]{qualifierId});
+            result[9] = t2_t9(tanks, new TraitId[]{qualifierId}, new double[][]{qualifierSet});
+            result[10] = t8_t10(tanks, new TraitId[]{qualifierId}, new double[][]{qualifierSet});
+            result[11] = t5_11(new TraitId[]{qualifierId});
         }
-        result[0] = belong(t1Values[0] / t1Values[1], quantifierSet);
-        result[1] = t2_t9(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet});
-        result[2] = t3(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet}, qualifierId, qualifierSet);
-        result[3] = t4(tanks, new TraitId[]{summarizerId}, result[2]);
-        result[4] = t5_11(new TraitId[]{summarizerId});
-        result[5] = t6(tanks.size(), quantifierIsRelative, quantifierSet);
-        result[6] = t7(tanks.size(), quantifierIsRelative, quantifierSet);
-        result[7] = t8_t10(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet});
+        result[1] = belong(t1Values[0] / t1Values[1], quantifierSet);
+        result[2] = t2_t9(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet});
+        result[3] = t3(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet}, qualifierId, qualifierSet);
+        result[4] = t4(tanks, new TraitId[]{summarizerId}, result[2]);
+        result[5] = t5_11(new TraitId[]{summarizerId});
+        result[6] = t6(tanks.size(), quantifierIsRelative, quantifierSet);
+        result[7] = t7(tanks.size(), quantifierIsRelative, quantifierSet);
+        result[8] = t8_t10(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet});
 
+        double sum = 0;
+        double divider = 0;
+        for(int i = 0; i < 11; i++){
+            sum += weights[i] * result[i];
+            divider += weights[i];
+        }
+        result[0] = sum / divider;
         return result;
     }
 
