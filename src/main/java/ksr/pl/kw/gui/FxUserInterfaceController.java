@@ -30,9 +30,9 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 public class FxUserInterfaceController implements Initializable {
 
-    private static final String CZOLGOW_MESSAGE = "%s czołgów";
-    private static final String KTORYCH_JEST_MESSAGE = " których %s jest %s,"; //todo: rename this
-    private static final String SUMMARIZER_MESSAGE = " ma %s %s"; //todo: rename this
+    private static final String QUANTIFIER_MESSAGE = "%s czołgów";
+    private static final String QUALIFIER_MESSAGE = " których %s jest %s,";
+    private static final String SUMMARIZER_MESSAGE = " ma %s %s";
 
     public static final ExecutorService es = Executors.newFixedThreadPool(1);
     public static Calculator calculator;
@@ -42,6 +42,8 @@ public class FxUserInterfaceController implements Initializable {
     //private static final String TIER_QUALIFIER = "tier";
     //private static final String NATION_QUALIFIER = "kraj";
 
+
+                //Podsumowania
     public ListView<FuzzySet> quantifierListView;
     public ListView<Trait> summarizerListView;
     public ListView<FuzzySet> summarizerFuzzySetsListView;
@@ -76,6 +78,7 @@ public class FxUserInterfaceController implements Initializable {
     public TextField t10WeightField;
     public TextField t11WeightField;
 
+                //Panel Użytkownika Zaawansowanego
     public ListView<TraitListItem> traitsListView;
     public ListView<FuzzySet> fuzzySetsListView;
     public TextField nameField;
@@ -257,11 +260,11 @@ public class FxUserInterfaceController implements Initializable {
     public void oneSubjectSummary() {
         es.submit(() -> {
             String label = quantifierListView.getSelectionModel().getSelectedItem().getLabel();
-            String summary = String.format(CZOLGOW_MESSAGE, label);
+            String summary = String.format(QUANTIFIER_MESSAGE, label);
             FuzzySet selectedQualifierSet = qualifierFuzzySetsListView.getSelectionModel().getSelectedItem();
             Trait selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
             if (selectedQualifierSet != null) {
-                summary += String.format(SUMMARIZER_MESSAGE, selectedQualifier, selectedQualifierSet);
+                summary += String.format(QUALIFIER_MESSAGE, selectedQualifier, selectedQualifierSet);
             }
             FuzzySet summarizerFuzzySetSelect = summarizerFuzzySetsListView.getSelectionModel().getSelectedItem();
             Trait summarizerListViewSelect = summarizerListView.getSelectionModel().getSelectedItem();
@@ -367,10 +370,10 @@ public class FxUserInterfaceController implements Initializable {
     private String multipleOneSubjectSummariesIteration(HashSet<Tank> tanks, boolean quantifierIsRelative, FuzzySet quantifierSet,
                                                         TraitId summarizerId, FuzzySet summarizerSet,
                                                         TraitId qualifierId, FuzzySet qualifierSet, double[] weights) {
-        String summary = String.format(CZOLGOW_MESSAGE, quantifierSet);
+        String summary = String.format(QUANTIFIER_MESSAGE, quantifierSet);
         FuzzySet qualifierAbcd = null;
         if (qualifierSet != null) {
-            summary += String.format(KTORYCH_JEST_MESSAGE, qualifierId, qualifierSet);
+            summary += String.format(QUALIFIER_MESSAGE, qualifierId, qualifierSet);
             qualifierAbcd = qualifierSet;
         }
         summary += String.format(SUMMARIZER_MESSAGE, summarizerSet, summarizerId);
