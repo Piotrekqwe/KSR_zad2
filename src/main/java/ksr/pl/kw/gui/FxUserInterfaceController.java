@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
+import ksr.pl.kw.service.MultiSubjectSummaryGenerator;
 import ksr.pl.kw.service.calculator.Calculator;
 import ksr.pl.kw.model.fuzzy.*;
 import ksr.pl.kw.model.*;
@@ -77,6 +78,12 @@ public class FxUserInterfaceController implements Initializable {
     public TextField t9WeightField;
     public TextField t10WeightField;
     public TextField t11WeightField;
+
+                //Wielopodmiotowe
+    public Text multiSubjectSummaryResultDisplay;
+    public ToggleGroup alliesOrAxisToggleGroup;
+    public RadioButton alliesToggle;
+    public RadioButton axisToggle;
 
                 //Panel Użytkownika Zaawansowanego
     public ListView<TraitListItem> traitsListView;
@@ -259,18 +266,19 @@ public class FxUserInterfaceController implements Initializable {
 
     public void oneSubjectSummary() {
         es.submit(() -> {
-            String label = quantifierListView.getSelectionModel().getSelectedItem().getLabel();
+            FuzzySet selectedQuantifier = quantifierListView.getSelectionModel().getSelectedItem();
+            String label = selectedQuantifier.getLabel();
             String summary = String.format(QUANTIFIER_MESSAGE, label);
-            FuzzySet selectedQualifierSet = qualifierFuzzySetsListView.getSelectionModel().getSelectedItem();
             Trait selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
+            FuzzySet selectedQualifierSet = qualifierFuzzySetsListView.getSelectionModel().getSelectedItem();
             if (selectedQualifierSet != null) {
                 summary += String.format(QUALIFIER_MESSAGE, selectedQualifier, selectedQualifierSet);
             }
-            FuzzySet summarizerFuzzySetSelect = summarizerFuzzySetsListView.getSelectionModel().getSelectedItem();
-            Trait summarizerListViewSelect = summarizerListView.getSelectionModel().getSelectedItem();
-            summary += String.format(SUMMARIZER_MESSAGE, summarizerFuzzySetSelect, summarizerListViewSelect);
+            Trait selectedSummarizer = summarizerListView.getSelectionModel().getSelectedItem();
+            FuzzySet selectedSummarizerSet = summarizerFuzzySetsListView.getSelectionModel().getSelectedItem();
+            summary += String.format(SUMMARIZER_MESSAGE, selectedSummarizerSet, selectedSummarizer);
             summaryDisplayField.setText(summary);
-            double[] result = generateOneSubjectSummary(selectedQualifier, summarizerFuzzySetSelect, summarizerListViewSelect);
+            double[] result = generateOneSubjectSummary(selectedQuantifier, selectedQualifier, selectedQualifierSet, selectedSummarizer, selectedSummarizerSet);
 
             t0Display.setText("T = " + df4.format(result[0]));
             t1Display.setText("T1 = " + df4.format(result[1]));
@@ -287,19 +295,18 @@ public class FxUserInterfaceController implements Initializable {
         });
     }
 
-    private double[] generateOneSubjectSummary(Trait selectedQualifier, FuzzySet summarizerFuzzySetSelect, Trait summarizerListViewSelect) {
+    private double[] generateOneSubjectSummary(FuzzySet selectedQuantifier, Trait selectedQualifier, FuzzySet selectedQualifierSet,
+                                               Trait selectedSummarizer, FuzzySet selectedSummarizerSet) {
         HashSet<Tank> tanks = tankRepository.getAllTanks();
         boolean quantifierIsRelative = (quantifierTypeToggleGroup.getSelectedToggle() == relativeQuantifierToggle);
-        FuzzySet quantifierSet = quantifierListView.getSelectionModel().getSelectedItem();
-        TraitId summarizerId = summarizerListViewSelect.getId();
+        TraitId summarizerId = selectedSummarizer.getId();
         double[] weights = initializeWeights();
         TraitId qualifierId = null;
-        FuzzySet qualifierSet = null;
         if (!(selectedQualifier instanceof EmptyTrait)) {
             qualifierId = selectedQualifier.getId();
-            qualifierSet = qualifierFuzzySetsListView.getSelectionModel().getSelectedItem();
         }
-        return OneSubjectSummaryGenerator.getInstance().calculate(tanks, quantifierIsRelative, quantifierSet, summarizerId, summarizerFuzzySetSelect, qualifierId, qualifierSet, weights);
+        return OneSubjectSummaryGenerator.getInstance().calculate(tanks, quantifierIsRelative, selectedQuantifier, summarizerId,
+                selectedSummarizerSet, qualifierId, selectedQualifierSet, weights);
     }
 
     private double[] initializeWeights() {
@@ -318,6 +325,83 @@ public class FxUserInterfaceController implements Initializable {
         return weights;
     }
 
+    public void multiSubjectSummary1() {
+        multiSubjectSummary(multiSubjectSummaryType.TYPE1);
+    }
+    public void multiSubjectSummary2() {
+        multiSubjectSummary(multiSubjectSummaryType.TYPE2);
+    }
+    public void multiSubjectSummary3() {
+        multiSubjectSummary(multiSubjectSummaryType.TYPE3);
+    }
+    public void multiSubjectSummary4() {
+        multiSubjectSummary(multiSubjectSummaryType.TYPE4);
+    }
+
+    private void multiSubjectSummary(multiSubjectSummaryType type) {
+        if (quantifierTypeToggleGroup.getSelectedToggle() == relativeQuantifierToggle) {
+            es.submit(() -> {
+                FuzzySet selectedQuantifier = quantifierListView.getSelectionModel().getSelectedItem();
+                String label = selectedQuantifier.getLabel();
+                String summary = String.format(QUANTIFIER_MESSAGE, label);
+                Trait selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
+                FuzzySet selectedQualifierSet = qualifierFuzzySetsListView.getSelectionModel().getSelectedItem();
+                Trait selectedSummarizer = summarizerListView.getSelectionModel().getSelectedItem();
+                FuzzySet selectedSummarizerSet = summarizerFuzzySetsListView.getSelectionModel().getSelectedItem();
+
+                if (alliesOrAxisToggleGroup.getSelectedToggle() == alliesToggle) {
+                    summary += " należących do aliantów";
+                } else {
+                    summary += " należących do państw osi";
+                }
+                if (type == multiSubjectSummaryType.TYPE3) {
+                    summary += String.format(QUALIFIER_MESSAGE, selectedQualifier, selectedQualifierSet);
+                }
+                if (alliesOrAxisToggleGroup.getSelectedToggle() == alliesToggle) {
+                    summary += " w porównaniu do czołgów państw osi";
+                } else {
+                    summary += " w porównaniu do czołgów aliantów";
+                }
+                if (type == multiSubjectSummaryType.TYPE2) {
+                    summary += String.format(QUALIFIER_MESSAGE, selectedQualifier, selectedQualifierSet);
+                }
+                summary += String.format(SUMMARIZER_MESSAGE, selectedSummarizerSet, selectedSummarizer);
+                summaryDisplayField.setText(summary);
+                double result = generateMultiSummary(type, selectedQuantifier, selectedQualifier, selectedQualifierSet, selectedSummarizer, selectedSummarizerSet);
+
+                multiSubjectSummaryResultDisplay.setText("T = " + df4.format(result));
+            });
+        }
+    }
+
+    private double generateMultiSummary(multiSubjectSummaryType type, FuzzySet selectedQuantifier, Trait selectedQualifier, FuzzySet selectedQualifierSet,
+                                        Trait selectedSummarizer, FuzzySet selectedSummarizerSet) {
+        HashSet<Tank> allies = tankRepository.getTanksByNation("china");
+        allies.addAll(tankRepository.getTanksByNation("france"));
+        allies.addAll(tankRepository.getTanksByNation("poland"));
+        allies.addAll(tankRepository.getTanksByNation("uk"));
+        allies.addAll(tankRepository.getTanksByNation("usa"));
+        allies.addAll(tankRepository.getTanksByNation("ussr"));
+
+        HashSet<Tank> axis = tankRepository.getTanksByNation("czech");
+        axis.addAll(tankRepository.getTanksByNation("germany"));
+        axis.addAll(tankRepository.getTanksByNation("italy"));
+        axis.addAll(tankRepository.getTanksByNation("japan"));
+        axis.addAll(tankRepository.getTanksByNation("sweden"));
+
+
+        if (alliesOrAxisToggleGroup.getSelectedToggle() == alliesToggle) {
+            return MultiSubjectSummaryGenerator.getInstance().generateMultiSummary(type, selectedQuantifier, selectedQualifier.getId(),
+                    selectedQualifierSet, selectedSummarizer.getId(), selectedSummarizerSet, allies, axis);
+        }
+        return MultiSubjectSummaryGenerator.getInstance().generateMultiSummary(type, selectedQuantifier, selectedQualifier.getId(),
+                selectedQualifierSet, selectedSummarizer.getId(), selectedSummarizerSet, axis, allies);
+
+    }
+
+
+
+    //TODO: delete or refactor
     public void multipleOneSubjectSummaries() {
         es.submit(() -> {
             summarizationTimerDisplay.setText("trwa podsumowywanie");
@@ -366,7 +450,7 @@ public class FxUserInterfaceController implements Initializable {
         });
 
     }
-
+    //TODO: delete or refactor
     private String multipleOneSubjectSummariesIteration(HashSet<Tank> tanks, boolean quantifierIsRelative, FuzzySet quantifierSet,
                                                         TraitId summarizerId, FuzzySet summarizerSet,
                                                         TraitId qualifierId, FuzzySet qualifierSet, double[] weights) {

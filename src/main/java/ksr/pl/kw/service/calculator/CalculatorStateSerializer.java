@@ -19,9 +19,12 @@ public class CalculatorStateSerializer {
 
 
     Calculator loadCalculator() {
-        List<Trait> traits = (List<Trait>) deserializationService.load(TRAIT_FILE_PATH).orElseGet(() -> Arrays.stream(TraitId.values()).map(Trait::new).collect(Collectors.toList()));
-        Quantifier relativeQuantifiers = (Quantifier) deserializationService.load(RELATIVE_QUANTIFIERS_PATH).orElseGet(() -> new Quantifier(Quantifier.RELATIVE_QUANTIFIERS_NAME));
-        Quantifier absoluteQuantifiers = (Quantifier) deserializationService.load(ABSOLUTE_QUANTIFIERS_PATH).orElseGet(() -> new Quantifier(Quantifier.ABSOLUTE_QUANTIFIERS_NAME));
+        List<Trait> traits = (List<Trait>) deserializationService.load(TRAIT_FILE_PATH).orElseGet(() ->
+                Arrays.stream(TraitId.values()).map(Trait::new).collect(Collectors.toList()));
+        Quantifier relativeQuantifiers = (Quantifier) deserializationService.load(RELATIVE_QUANTIFIERS_PATH).orElseGet(() ->
+                new Quantifier(Quantifier.RELATIVE_QUANTIFIERS_NAME));
+        Quantifier absoluteQuantifiers = (Quantifier) deserializationService.load(ABSOLUTE_QUANTIFIERS_PATH).orElseGet(() ->
+                new Quantifier(Quantifier.ABSOLUTE_QUANTIFIERS_NAME));
         return new Calculator(traits, relativeQuantifiers, absoluteQuantifiers);
     }
 

@@ -61,34 +61,27 @@ public class Calculator {
         return null;
     }
 
-    //public static double belong(double value, double[] abcd){
-    //    if(value < abcd[0] || value > abcd[abcd.length - 1]) return 0;
-    //    if(value < abcd[1]) return (value - abcd[0]) / (abcd[1] - abcd[0]);
-    //    if(value > abcd[abcd.length - 2]) return (abcd[abcd.length - 1] - value) / (abcd[abcd.length - 1] - abcd[abcd.length - 2]);
-    //    return 1;
-    //}
-    public double[] t1form1(HashSet<Tank> tanks, boolean quantifierIsRelative, TraitId summarizerId, FuzzySet summarizerSet) {
-        double[] result = new double[]{0, 0};
+    public double cardinalNumber(HashSet<Tank> tanks, TraitId summarizerId, FuzzySet summarizerSet, boolean quantifierIsRelative) {
+        double result = 0;
         for (Tank tank : tanks) {
-            result[0] += summarizerSet.belong(tank.getTraits().get(summarizerId));
+            result += summarizerSet.belong(tank.getTraits().get(summarizerId));
         }
         if (quantifierIsRelative) {
-            result[1] += tanks.size();
-        } else result[1] = 1;
+            result /= tanks.size();
+        }
         return result;
     }
 
-    public double[] t1form2(HashSet<Tank> tanks, TraitId summarizerId, FuzzySet summarizerSet, TraitId qualifierId, FuzzySet qualifierSet) {
-        double[] result = new double[]{0, 0};
+    public double cardinalNumberWithSummarizer(HashSet<Tank> tanks, TraitId summarizerId, FuzzySet summarizerSet, TraitId qualifierId, FuzzySet qualifierSet) {
+        double result = 0;
+        double divider = 0;
         for (Tank tank : tanks) {
             double summarizerBelong = summarizerSet.belong(tank.getTraits().get(summarizerId));
             double qualifierBelong = qualifierSet.belong(tank.getTraits().get(qualifierId));
-            result[0] += Math.min(summarizerBelong, qualifierBelong);
+            result += Math.min(summarizerBelong, qualifierBelong);
+            divider += qualifierSet.belong(tank.getTraits().get(qualifierId));
         }
-        for (Tank tank : tanks) {
-            result[1] += qualifierSet.belong(tank.getTraits().get(qualifierId));
-        }
-        return result;
+        return result / divider;
     }
 
     private boolean supp(double value, double[] set) {
