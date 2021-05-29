@@ -1,6 +1,4 @@
-package ksr.pl.kw.logic.fuzzy;
-
-import ksr.pl.kw.logic.tank.TankType;
+package ksr.pl.kw.model.traits;
 
 public enum TraitId {
     PRICE_CREDIT("price_credit", "cena"),
@@ -15,7 +13,6 @@ public enum TraitId {
     FIRE_RATE("gun_fire_rate", "szybkostrzelność"),
     ENGINE_POWER("engine_power", "moc silnika"),
     RADIO("radio", "zasięg sygnału radiowego");
-
 
 
     public final String dbName;
@@ -34,5 +31,4 @@ public enum TraitId {
         }
         return null;
     }
-
 }

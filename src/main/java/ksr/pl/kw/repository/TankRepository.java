@@ -1,15 +1,12 @@
-package ksr.pl.kw.db;
+package ksr.pl.kw.repository;
 
-import ksr.pl.kw.logic.fuzzy.TraitId;
-import ksr.pl.kw.logic.tank.Tank;
-import ksr.pl.kw.logic.tank.TankType;
+import ksr.pl.kw.model.traits.TraitId;
+import ksr.pl.kw.model.tanks.Tank;
+import ksr.pl.kw.model.tanks.TankType;
 
-import java.awt.image.BandedSampleModel;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashSet;
-import java.util.Map;
 
 public class TankRepository {
 

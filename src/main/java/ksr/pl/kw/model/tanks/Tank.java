@@ -1,6 +1,6 @@
-package ksr.pl.kw.logic.tank;
+package ksr.pl.kw.model.tanks;
 
-import ksr.pl.kw.logic.fuzzy.TraitId;
+import ksr.pl.kw.model.traits.TraitId;
 
 import java.util.EnumMap;
 

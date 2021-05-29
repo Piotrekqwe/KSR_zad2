@@ -1,4 +1,4 @@
-package ksr.pl.kw.logic.tank;
+package ksr.pl.kw.model.tanks;
 
 public enum TankType {
     LIGHT("lightTank", "lekki"),

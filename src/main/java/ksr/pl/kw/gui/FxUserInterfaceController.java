@@ -1,12 +1,18 @@
 package ksr.pl.kw.gui;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
-import ksr.pl.kw.logic.Calculator;
-import ksr.pl.kw.logic.fuzzy.*;
-import ksr.pl.kw.logic.tank.Tank;
-import ksr.pl.kw.db.TankRepository;
+import ksr.pl.kw.service.calculator.Calculator;
+import ksr.pl.kw.model.fuzzy.*;
+import ksr.pl.kw.model.*;
+import ksr.pl.kw.model.tanks.Tank;
+import ksr.pl.kw.model.traits.EmptyTrait;
+import ksr.pl.kw.model.traits.Trait;
+import ksr.pl.kw.model.traits.TraitId;
+import ksr.pl.kw.repository.TankRepository;
+import ksr.pl.kw.service.OneSubjectSummaryGenerator;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -24,6 +30,10 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 public class FxUserInterfaceController implements Initializable {
 
+    private static final String CZOLGOW_MESSAGE = "%s czołgów";
+    private static final String KTORYCH_JEST_MESSAGE = " których %s jest %s,"; //todo: rename this
+    private static final String SUMMARIZER_MESSAGE = " ma %s %s"; //todo: rename this
+
     public static final ExecutorService es = Executors.newFixedThreadPool(1);
     public static Calculator calculator;
     private TankRepository tankRepository;
@@ -32,29 +42,28 @@ public class FxUserInterfaceController implements Initializable {
     //private static final String TIER_QUALIFIER = "tier";
     //private static final String NATION_QUALIFIER = "kraj";
 
-
-    public ListView quantifierListView;
-    public ListView summarizerListView;
-    public ListView summarizerFuzzySetsListView;
-    public ListView qualifierListView;
-    public ListView qualifierFuzzySetsListView;
+    public ListView<FuzzySet> quantifierListView;
+    public ListView<Trait> summarizerListView;
+    public ListView<FuzzySet> summarizerFuzzySetsListView;
+    public ListView<Trait> qualifierListView;
+    public ListView<FuzzySet> qualifierFuzzySetsListView;
     public ToggleGroup quantifierTypeToggleGroup;
     public RadioButton relativeQuantifierToggle;
     public RadioButton absoluteQuantifierToggle;
     public TextArea summaryDisplayField;
     public Text summarizationTimerDisplay;
-    public Text t0Dusplay;
-    public Text t1Dusplay;
-    public Text t2Dusplay;
-    public Text t3Dusplay;
-    public Text t4Dusplay;
-    public Text t5Dusplay;
-    public Text t6Dusplay;
-    public Text t7Dusplay;
-    public Text t8Dusplay;
-    public Text t9Dusplay;
-    public Text t10Dusplay;
-    public Text t11Dusplay;
+    public Text t0Display;
+    public Text t1Display;
+    public Text t2Display;
+    public Text t3Display;
+    public Text t4Display;
+    public Text t5Display;
+    public Text t6Display;
+    public Text t7Display;
+    public Text t8Display;
+    public Text t9Display;
+    public Text t10Display;
+    public Text t11Display;
     public TextField t1WeightField;
     public TextField t2WeightField;
     public TextField t3WeightField;
@@ -67,8 +76,8 @@ public class FxUserInterfaceController implements Initializable {
     public TextField t10WeightField;
     public TextField t11WeightField;
 
-    public ListView traitsListView;
-    public ListView fuzzySetsListView;
+    public ListView<TraitListItem> traitsListView;
+    public ListView<FuzzySet> fuzzySetsListView;
     public TextField nameField;
     public TextField aField;
     public TextField bField;
@@ -78,44 +87,36 @@ public class FxUserInterfaceController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         tankRepository = new TankRepository();
-        calculator = new Calculator();
+        calculator = Calculator.getInstance();
         refreshTraitsList();
         refreshQuantifierList();
         refreshVariableLists();
     }
 
-    private static final String ALL_TANKS_QUALIFIER = "brak kwalifikatora";
-
     private void refreshVariableLists() {
-        summarizerListView.getItems().removeAll(summarizerListView.getItems());
-        qualifierListView.getItems().removeAll(qualifierListView.getItems());
-        fillVariableList(summarizerListView);
-        qualifierListView.getItems().add(ALL_TANKS_QUALIFIER);
-        fillVariableList(qualifierListView);
-    }
-
-    private void fillVariableList(ListView variableListView) {
-        for (Trait trait : calculator.getTraits()) {
-            variableListView.getItems().add(trait);
-        }
+        ObservableList<Trait> summarizerListViewItems = summarizerListView.getItems();
+        ObservableList<Trait> qualifierListViewItems = qualifierListView.getItems();
+        summarizerListViewItems.clear();
+        qualifierListViewItems.clear();
+        summarizerListViewItems.addAll(calculator.getTraits());
+        qualifierListViewItems.add(EmptyTrait.getInstance());
+        qualifierListViewItems.addAll(calculator.getTraits());
     }
 
     private void refreshTraitsList() {
-        traitsListView.getItems().removeAll(traitsListView.getItems());
-        for (Trait trait : calculator.getTraits()) {
-            traitsListView.getItems().add(trait);
-        }
-        traitsListView.getItems().add(calculator.getRelativeQuantifiers());
-        traitsListView.getItems().add(calculator.getAbsoluteQuantifiers());
+        ObservableList<TraitListItem> items = traitsListView.getItems();
+        items.clear();
+        items.addAll(calculator.getTraits());
+        items.add(calculator.getRelativeQuantifiers());
+        items.add(calculator.getAbsoluteQuantifiers());
     }
 
     public void refreshFuzzySetsList() {
-        TraitListItem selectedItem = ((TraitListItem) traitsListView.getSelectionModel().getSelectedItem());
+        TraitListItem selectedItem = traitsListView.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
-            fuzzySetsListView.getItems().removeAll(fuzzySetsListView.getItems());
-            for (FuzzySet set : selectedItem.getSets()) {
-                fuzzySetsListView.getItems().add(set);
-            }
+            ObservableList<FuzzySet> items = fuzzySetsListView.getItems();
+            items.clear();
+            items.addAll(selectedItem.getSets());
         }
     }
 
@@ -126,17 +127,15 @@ public class FxUserInterfaceController implements Initializable {
         } else {
             selectedQuantifier = calculator.getAbsoluteQuantifiers();
         }
-
         if (selectedQuantifier != null) {
-            quantifierListView.getItems().removeAll(quantifierListView.getItems());
-            for (FuzzySet set : selectedQuantifier.getSets()) {
-                quantifierListView.getItems().add(set);
-            }
+            ObservableList<FuzzySet> items = quantifierListView.getItems();
+            items.clear();
+            items.addAll(selectedQuantifier.getSets());
         }
     }
 
     public void refreshSummarizerSetsListView() {
-        Trait selectedSumarizer = (Trait) summarizerListView.getSelectionModel().getSelectedItem();
+        Trait selectedSumarizer = summarizerListView.getSelectionModel().getSelectedItem();
         if (selectedSumarizer != null) {
             summarizerFuzzySetsListView.getItems().removeAll(summarizerFuzzySetsListView.getItems());
             for (FuzzySet set : selectedSumarizer.getSets()) {
@@ -146,38 +145,33 @@ public class FxUserInterfaceController implements Initializable {
     }
 
     public void refreshQualifierSetsListView() {
-        Object selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
+        Trait selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
         if (selectedQualifier != null) {
-            if (selectedQualifier instanceof Trait) {
-                qualifierFuzzySetsListView.getItems().removeAll(qualifierFuzzySetsListView.getItems());
-                for (FuzzySet set : ((Trait)selectedQualifier).getSets()) {
-                    qualifierFuzzySetsListView.getItems().add(set);
-                }
-            }
-            else{
-                qualifierFuzzySetsListView.getItems().removeAll(qualifierFuzzySetsListView.getItems());
+            ObservableList<FuzzySet> items = qualifierFuzzySetsListView.getItems();
+            items.clear();
+            if (!(selectedQualifier instanceof EmptyTrait)) {
+                items.addAll(selectedQualifier.getSets());
             }
         }
     }
 
     public void addSet() {
-        TraitListItem selectedTrait = ((TraitListItem) traitsListView.getSelectionModel().getSelectedItem());
+        TraitListItem selectedTrait = traitsListView.getSelectionModel().getSelectedItem();
         if (selectedTrait != null) {
-            selectedTrait.getSets().add(new FuzzySet(new double[]{1, 2, 3, 4}, "Nowy set"));
+            selectedTrait.getSets().add(FuzzySet.createStandardFuzzySet(new double[]{1, 2, 3, 4}, "Nowy set"));
         }
         refreshFuzzySetsList();
     }
 
     public void removeSet() {
-        FuzzySet set = (FuzzySet) fuzzySetsListView.getSelectionModel().getSelectedItem();
+        FuzzySet set = fuzzySetsListView.getSelectionModel().getSelectedItem();
         if (set != null) {
-            TraitListItem selectedItem = ((TraitListItem) traitsListView.getSelectionModel().getSelectedItem());
-            selectedItem.getSets().remove(set);
+            traitsListView.getSelectionModel().getSelectedItem().getSets().remove(set);
         }
     }
 
     public void modifySet() {
-        FuzzySet set = (FuzzySet) fuzzySetsListView.getSelectionModel().getSelectedItem();
+        FuzzySet set = fuzzySetsListView.getSelectionModel().getSelectedItem();
         if (set != null) {
             selectedSet = set;
             displaySelectedSet();
@@ -211,7 +205,7 @@ public class FxUserInterfaceController implements Initializable {
             abcd[0] = Double.parseDouble(aField.getText());
             abcd[1] = Double.parseDouble(bField.getText());
             abcd[2] = Double.parseDouble(cField.getText());
-            selectedSet.setAbcd(abcd);
+            selectedSet = FuzzySet.createStandardFuzzySet(abcd, selectedSet.getLabel());
             refreshFuzzySetsList();
         }
     }
@@ -253,88 +247,84 @@ public class FxUserInterfaceController implements Initializable {
             } else {
                 abcd = new double[]{Double.parseDouble(row[1]), Double.parseDouble(row[2]), Double.parseDouble(row[3])};
             }
-            fuzzySets.add(new FuzzySet(abcd, row[0]));
+            fuzzySets.add(FuzzySet.createStandardFuzzySet(abcd, row[0]));
         }
         return fuzzySets;
     }
 
     private static final DecimalFormat df4 = new DecimalFormat("#.####");
+
     public void oneSubjectSummary() {
         es.submit(() -> {
-            String summary = ((FuzzySet) quantifierListView.getSelectionModel().getSelectedItem()).getLabel() + " czołgów";
-            FuzzySet selectedQualifierSet = (FuzzySet) qualifierFuzzySetsListView.getSelectionModel().getSelectedItem();
+            String label = quantifierListView.getSelectionModel().getSelectedItem().getLabel();
+            String summary = String.format(CZOLGOW_MESSAGE, label);
+            FuzzySet selectedQualifierSet = qualifierFuzzySetsListView.getSelectionModel().getSelectedItem();
+            Trait selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
             if (selectedQualifierSet != null) {
-                summary += " których " + qualifierListView.getSelectionModel().getSelectedItem() + " jest " + selectedQualifierSet + ',';
+                summary += String.format(SUMMARIZER_MESSAGE, selectedQualifier, selectedQualifierSet);
             }
-            summary += " ma " + summarizerFuzzySetsListView.getSelectionModel().getSelectedItem() + ' ' + summarizerListView.getSelectionModel().getSelectedItem();
+            FuzzySet summarizerFuzzySetSelect = summarizerFuzzySetsListView.getSelectionModel().getSelectedItem();
+            Trait summarizerListViewSelect = summarizerListView.getSelectionModel().getSelectedItem();
+            summary += String.format(SUMMARIZER_MESSAGE, summarizerFuzzySetSelect, summarizerListViewSelect);
             summaryDisplayField.setText(summary);
+            double[] result = generateOneSubjectSummary(selectedQualifier, summarizerFuzzySetSelect, summarizerListViewSelect);
 
-            HashSet<Tank> tanks = tankRepository.getAllTanks();
-            boolean quantifierIsRelative = (quantifierTypeToggleGroup.getSelectedToggle() == relativeQuantifierToggle);
-            double[] quantifierSet = ((FuzzySet) quantifierListView.getSelectionModel().getSelectedItem()).getAbcd();
-            TraitId summarizerId = ((Trait) summarizerListView.getSelectionModel().getSelectedItem()).getId();
-            double[] summarizerSet = ((FuzzySet) summarizerFuzzySetsListView.getSelectionModel().getSelectedItem()).getAbcd();
-            TraitId qualifierId = null;
-            double[] qualifierSet = null;
-            Object selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
-            if (selectedQualifier instanceof Trait) {
-                qualifierId = ((Trait) selectedQualifier).getId();
-                qualifierSet = ((FuzzySet) qualifierFuzzySetsListView.getSelectionModel().getSelectedItem()).getAbcd();
-            }
-
-            double[] weights = new double[11];
-            weights[0] = Double.parseDouble(t1WeightField.getText());
-            weights[1] = Double.parseDouble(t2WeightField.getText());
-            weights[2] = Double.parseDouble(t3WeightField.getText());
-            weights[3] = Double.parseDouble(t4WeightField.getText());
-            weights[4] = Double.parseDouble(t5WeightField.getText());
-            weights[5] = Double.parseDouble(t6WeightField.getText());
-            weights[6] = Double.parseDouble(t7WeightField.getText());
-            weights[7] = Double.parseDouble(t8WeightField.getText());
-            weights[8] = Double.parseDouble(t9WeightField.getText());
-            weights[9] = Double.parseDouble(t10WeightField.getText());
-            weights[10] = Double.parseDouble(t11WeightField.getText());
-
-            double[] result = calculator.oneSubjectSummary(tanks, quantifierIsRelative, quantifierSet, summarizerId, summarizerSet, qualifierId, qualifierSet, weights);
-
-            t0Dusplay.setText("T = " + df4.format(result[0]));
-            t1Dusplay.setText("T1 = " + df4.format(result[1]));
-            t2Dusplay.setText("T2 = " + df4.format(result[2]));
-            t3Dusplay.setText("T3 = " + df4.format(result[3]));
-            t4Dusplay.setText("T4 = " + df4.format(result[4]));
-            t5Dusplay.setText("T5 = " + df4.format(result[5]));
-            t6Dusplay.setText("T6 = " + df4.format(result[6]));
-            t7Dusplay.setText("T7 = " + df4.format(result[7]));
-            t8Dusplay.setText("T8 = " + df4.format(result[8]));
-            t9Dusplay.setText("T9 = " + df4.format(result[9]));
-            t10Dusplay.setText("T10 = " + df4.format(result[10]));
-            t11Dusplay.setText("T11 = " + df4.format(result[11]));
+            t0Display.setText("T = " + df4.format(result[0]));
+            t1Display.setText("T1 = " + df4.format(result[1]));
+            t2Display.setText("T2 = " + df4.format(result[2]));
+            t3Display.setText("T3 = " + df4.format(result[3]));
+            t4Display.setText("T4 = " + df4.format(result[4]));
+            t5Display.setText("T5 = " + df4.format(result[5]));
+            t6Display.setText("T6 = " + df4.format(result[6]));
+            t7Display.setText("T7 = " + df4.format(result[7]));
+            t8Display.setText("T8 = " + df4.format(result[8]));
+            t9Display.setText("T9 = " + df4.format(result[9]));
+            t10Display.setText("T10 = " + df4.format(result[10]));
+            t11Display.setText("T11 = " + df4.format(result[11]));
         });
+    }
+
+    private double[] generateOneSubjectSummary(Trait selectedQualifier, FuzzySet summarizerFuzzySetSelect, Trait summarizerListViewSelect) {
+        HashSet<Tank> tanks = tankRepository.getAllTanks();
+        boolean quantifierIsRelative = (quantifierTypeToggleGroup.getSelectedToggle() == relativeQuantifierToggle);
+        FuzzySet quantifierSet = quantifierListView.getSelectionModel().getSelectedItem();
+        TraitId summarizerId = summarizerListViewSelect.getId();
+        double[] weights = initializeWeights();
+        TraitId qualifierId = null;
+        FuzzySet qualifierSet = null;
+        if (!(selectedQualifier instanceof EmptyTrait)) {
+            qualifierId = selectedQualifier.getId();
+            qualifierSet = qualifierFuzzySetsListView.getSelectionModel().getSelectedItem();
+        }
+        return OneSubjectSummaryGenerator.getInstance().calculate(tanks, quantifierIsRelative, quantifierSet, summarizerId, summarizerFuzzySetSelect, qualifierId, qualifierSet, weights);
+    }
+
+    private double[] initializeWeights() {
+        double[] weights = new double[11];
+        weights[0] = Double.parseDouble(t1WeightField.getText());
+        weights[1] = Double.parseDouble(t2WeightField.getText());
+        weights[2] = Double.parseDouble(t3WeightField.getText());
+        weights[3] = Double.parseDouble(t4WeightField.getText());
+        weights[4] = Double.parseDouble(t5WeightField.getText());
+        weights[5] = Double.parseDouble(t6WeightField.getText());
+        weights[6] = Double.parseDouble(t7WeightField.getText());
+        weights[7] = Double.parseDouble(t8WeightField.getText());
+        weights[8] = Double.parseDouble(t9WeightField.getText());
+        weights[9] = Double.parseDouble(t10WeightField.getText());
+        weights[10] = Double.parseDouble(t11WeightField.getText());
+        return weights;
     }
 
     public void multipleOneSubjectSummaries() {
         es.submit(() -> {
             summarizationTimerDisplay.setText("trwa podsumowywanie");
-            double[] weights = new double[11];
-            weights[0] = Double.parseDouble(t1WeightField.getText());
-            weights[1] = Double.parseDouble(t2WeightField.getText());
-            weights[2] = Double.parseDouble(t3WeightField.getText());
-            weights[3] = Double.parseDouble(t4WeightField.getText());
-            weights[4] = Double.parseDouble(t5WeightField.getText());
-            weights[5] = Double.parseDouble(t6WeightField.getText());
-            weights[6] = Double.parseDouble(t7WeightField.getText());
-            weights[7] = Double.parseDouble(t8WeightField.getText());
-            weights[8] = Double.parseDouble(t9WeightField.getText());
-            weights[9] = Double.parseDouble(t10WeightField.getText());
-            weights[10] = Double.parseDouble(t11WeightField.getText());
+            double[] weights = initializeWeights();
 
             HashSet<Tank> tanks = tankRepository.getAllTanks();
-            TraitId summarizerId = ((Trait) summarizerListView.getSelectionModel().getSelectedItem()).getId();
-            Object selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
+            TraitId summarizerId = summarizerListView.getSelectionModel().getSelectedItem().getId();
+            Trait selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
             Quantifier selectedQuantifier;
             boolean quantifierIsRelative = false;
-            TraitId summarizerTraitId = ((Trait) summarizerListView.getSelectionModel().getSelectedItem()).getId();
-            //TraitId qualifierTraitId = ((Trait) qualifierListView.getSelectionModel().getSelectedItem()).getId();
 
             try (FileWriter writer = new FileWriter("summaries.txt");
                  BufferedWriter bw = new BufferedWriter(writer)) {
@@ -346,30 +336,26 @@ public class FxUserInterfaceController implements Initializable {
                     selectedQuantifier = calculator.getAbsoluteQuantifiers();
                 }
                 boolean finalQuantifierIsRelative = quantifierIsRelative;
-                selectedQuantifier.getSets().forEach(quantifierSet -> {
-                    summarizerFuzzySetsListView.getItems().forEach(summarizerConsumer -> {
-                        FuzzySet summarizerSet = (FuzzySet) summarizerConsumer;
-                        if (selectedQualifier instanceof Trait) {
-                            TraitId qualifierId = ((Trait) selectedQualifier).getId();
-                            qualifierFuzzySetsListView.getItems().forEach(qualifierConsumer -> {
-                                FuzzySet qualifierSet = (FuzzySet) qualifierConsumer;
-                                try {
-                                    bw.write(multipleOneSubjectSummariesIteration(tanks, finalQuantifierIsRelative, quantifierSet,
-                                            summarizerId, summarizerSet, qualifierId, qualifierSet, weights));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            });
-                        } else {
+                selectedQuantifier.getSets().forEach(quantifierSet -> summarizerFuzzySetsListView.getItems().forEach(summarizerConsumer -> {
+                    if (!(selectedQualifier instanceof EmptyTrait)) {
+                        TraitId qualifierId = selectedQualifier.getId();
+                        qualifierFuzzySetsListView.getItems().forEach(qualifierConsumer -> {
                             try {
                                 bw.write(multipleOneSubjectSummariesIteration(tanks, finalQuantifierIsRelative, quantifierSet,
-                                        summarizerId, summarizerSet, null, null, weights));
+                                        summarizerId, summarizerConsumer, qualifierId, qualifierConsumer, weights));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                        });
+                    } else {
+                        try {
+                            bw.write(multipleOneSubjectSummariesIteration(tanks, finalQuantifierIsRelative, quantifierSet,
+                                    summarizerId, summarizerConsumer, null, null, weights));
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    });
-                });
+                    }
+                }));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -377,22 +363,23 @@ public class FxUserInterfaceController implements Initializable {
         });
 
     }
+
     private String multipleOneSubjectSummariesIteration(HashSet<Tank> tanks, boolean quantifierIsRelative, FuzzySet quantifierSet,
                                                         TraitId summarizerId, FuzzySet summarizerSet,
-                                                        TraitId qualifierId, FuzzySet qualifierSet, double[] weights){
-        String summary = quantifierSet + " czołgów";
-        double[] qualifierAbcd = null;
+                                                        TraitId qualifierId, FuzzySet qualifierSet, double[] weights) {
+        String summary = String.format(CZOLGOW_MESSAGE, quantifierSet);
+        FuzzySet qualifierAbcd = null;
         if (qualifierSet != null) {
-            summary += " których " + qualifierId + " jest " + qualifierSet + ',';
-            qualifierAbcd = qualifierSet.getAbcd();
+            summary += String.format(KTORYCH_JEST_MESSAGE, qualifierId, qualifierSet);
+            qualifierAbcd = qualifierSet;
         }
-        summary += " ma " + summarizerSet + ' ' + summarizerId;
+        summary += String.format(SUMMARIZER_MESSAGE, summarizerSet, summarizerId);
         StringBuilder line = new StringBuilder(summary);
 
-        double[] result = calculator.oneSubjectSummary(tanks, quantifierIsRelative, quantifierSet.getAbcd(),
-                summarizerId, summarizerSet.getAbcd(), qualifierId, qualifierAbcd, weights);
+        double[] result = OneSubjectSummaryGenerator.getInstance().calculate(tanks, quantifierIsRelative, quantifierSet,
+                summarizerId, summarizerSet, qualifierId, qualifierAbcd, weights);
 
-        for(double tx : result){
+        for (double tx : result) {
             line.append('$').append(df4.format(tx));
         }
         line.append('\n');

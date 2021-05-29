@@ -143,12 +143,12 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <Text fx:id="t0Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T = ">
+                                <Text fx:id="t0Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T = ">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
                                 </Text>
-                                <Text fx:id="t1Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T1 = " GridPane.rowIndex="1">
+                                <Text fx:id="t1Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T1 = " GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -158,7 +158,7 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Text fx:id="t2Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T2 = " GridPane.rowIndex="2">
+                                <Text fx:id="t2Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T2 = " GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -168,7 +168,7 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Text fx:id="t3Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T3 = " GridPane.rowIndex="3">
+                                <Text fx:id="t3Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T3 = " GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -178,7 +178,7 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Text fx:id="t4Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T4 = " GridPane.rowIndex="4">
+                                <Text fx:id="t4Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T4 = " GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -188,7 +188,7 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Text fx:id="t5Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T5 = " GridPane.rowIndex="5">
+                                <Text fx:id="t5Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T5 = " GridPane.rowIndex="5">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -198,7 +198,7 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Text fx:id="t6Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T6 = " GridPane.rowIndex="6">
+                                <Text fx:id="t6Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T6 = " GridPane.rowIndex="6">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -208,7 +208,7 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Text fx:id="t7Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T7 = " GridPane.rowIndex="7">
+                                <Text fx:id="t7Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T7 = " GridPane.rowIndex="7">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -218,7 +218,7 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Text fx:id="t8Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T8 = " GridPane.rowIndex="8">
+                                <Text fx:id="t8Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T8 = " GridPane.rowIndex="8">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -228,7 +228,7 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Text fx:id="t9Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T9 = " GridPane.rowIndex="9">
+                                <Text fx:id="t9Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T9 = " GridPane.rowIndex="9">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -238,7 +238,7 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Text fx:id="t10Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T10 = " GridPane.rowIndex="10">
+                                <Text fx:id="t10Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T10 = " GridPane.rowIndex="10">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -248,7 +248,7 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Text fx:id="t11Dusplay" strokeType="OUTSIDE" strokeWidth="0.0" text="T11 = " GridPane.rowIndex="11">
+                                <Text fx:id="t11Display" strokeType="OUTSIDE" strokeWidth="0.0" text="T11 = " GridPane.rowIndex="11">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>

@@ -1,13 +1,22 @@
-package ksr.pl.kw.logic.fuzzy;
+package ksr.pl.kw.model;
+
+import ksr.pl.kw.model.fuzzy.FuzzySet;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Quantifier implements Serializable, TraitListItem {
-    private String title;
-    private ArrayList<FuzzySet> fuzzySets;
-    public static final String RELATIVE_QUANTIFIERS_NAME = "Kwantyfikatory Względne";
     public static final String ABSOLUTE_QUANTIFIERS_NAME = "Kwantyfikatory Absolutne";
+    public static final String RELATIVE_QUANTIFIERS_NAME = "Kwantyfikatory Względne";
+    private final String title;
+    private final List<FuzzySet> fuzzySets;
+
+    public Quantifier(String title) {
+        this.title = title;
+        this.fuzzySets = Collections.emptyList();
+    }
 
     public Quantifier(String title, ArrayList<FuzzySet> sets) {
         this.fuzzySets = sets;
@@ -19,7 +28,7 @@ public class Quantifier implements Serializable, TraitListItem {
     }
 
     @Override
-    public ArrayList<FuzzySet> getSets() {
+    public List<FuzzySet> getSets() {
         return fuzzySets;
     }
 
