@@ -342,7 +342,13 @@ public class FxUserInterfaceController implements Initializable {
         if (quantifierTypeToggleGroup.getSelectedToggle() == relativeQuantifierToggle) {
             es.submit(() -> {
                 FuzzySet selectedQuantifier = quantifierListView.getSelectionModel().getSelectedItem();
-                String label = selectedQuantifier.getLabel();
+                String label;
+                if (type == multiSubjectSummaryType.TYPE4) {
+                    label = "więcej";
+                }
+                else{
+                    label = selectedQuantifier.getLabel();
+                }
                 String summary = String.format(QUANTIFIER_MESSAGE, label);
                 Trait selectedQualifier = qualifierListView.getSelectionModel().getSelectedItem();
                 FuzzySet selectedQualifierSet = qualifierFuzzySetsListView.getSelectionModel().getSelectedItem();
@@ -351,7 +357,8 @@ public class FxUserInterfaceController implements Initializable {
 
                 if (alliesOrAxisToggleGroup.getSelectedToggle() == alliesToggle) {
                     summary += " należących do aliantów";
-                } else {
+                }
+                else {
                     summary += " należących do państw osi";
                 }
                 if (type == multiSubjectSummaryType.TYPE3) {
@@ -359,7 +366,8 @@ public class FxUserInterfaceController implements Initializable {
                 }
                 if (alliesOrAxisToggleGroup.getSelectedToggle() == alliesToggle) {
                     summary += " w porównaniu do czołgów państw osi";
-                } else {
+                }
+                else {
                     summary += " w porównaniu do czołgów aliantów";
                 }
                 if (type == multiSubjectSummaryType.TYPE2) {

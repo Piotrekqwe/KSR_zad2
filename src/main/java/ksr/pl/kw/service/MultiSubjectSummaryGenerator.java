@@ -36,8 +36,10 @@ public class MultiSubjectSummaryGenerator {
         else{
             m2value = calculator.cardinalNumber(Set2, summarizerId, summarizerSet, true);
         }
-
+        if (type == multiSubjectSummaryType.TYPE4) {
+            //uproszczony wzór Reichenbacha dla kwantyfikatora więcej (trujkątny a = 0, b = 1, c = 1)
+            return m1value - m1value * m2value;
+        }
         return selectedQuantifier.belong(m1value / (m1value + m2value));
     }
-
 }
