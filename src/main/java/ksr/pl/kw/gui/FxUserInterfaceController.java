@@ -302,7 +302,7 @@ public class FxUserInterfaceController implements Initializable {
         TraitId summarizerId = selectedSummarizer.getId();
         double[] weights = initializeWeights();
         TraitId qualifierId = null;
-        if (!(selectedQualifier instanceof EmptyTrait)) {
+        if (!(selectedQualifier instanceof EmptyTrait) && !(selectedQualifier == null)) {
             qualifierId = selectedQualifier.getId();
         }
         return OneSubjectSummaryGenerator.getInstance().calculate(tanks, quantifierIsRelative, selectedQuantifier, summarizerId,

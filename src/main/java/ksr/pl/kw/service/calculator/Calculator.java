@@ -113,12 +113,12 @@ public class Calculator {
     }
 
     //nie jestem pewien czy t3 działa dobrze dla wielu sumatorów
-    public double t3(HashSet<Tank> tanks, TraitId[] summarizerIds, double[][] summarizerSets, TraitId qualifierId, double[] qualifierSet) {
+    public double t3(HashSet<Tank> tanks, TraitId[] summarizerIds, double[][] summarizerSets, TraitId qualifierId, FuzzySet qualifierSet) {
         HashSet<Tank> remainingTanks = (HashSet<Tank>) tanks.clone();
         if (qualifierId != null) {
             ArrayList<Tank> toRemoveList = new ArrayList<>();
             remainingTanks.forEach(tank -> {
-                if (supp(tank.getTraits().get(qualifierId), qualifierSet))
+                if (supp(tank.getTraits().get(qualifierId), qualifierSet.getAbcd()))
                     toRemoveList.add(tank);
             });
             for (Tank tank : toRemoveList) {
