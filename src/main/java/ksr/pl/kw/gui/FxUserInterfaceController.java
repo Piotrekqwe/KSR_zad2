@@ -39,10 +39,6 @@ public class FxUserInterfaceController implements Initializable {
     public static Calculator calculator;
     private TankRepository tankRepository;
     private FuzzySet selectedSet;
-    //private static final String TANK_TYPE_QUALIFIER = "typ czołgu";
-    //private static final String TIER_QUALIFIER = "tier";
-    //private static final String NATION_QUALIFIER = "kraj";
-
 
                 //Podsumowania
     public ListView<FuzzySet> quantifierListView;
@@ -399,10 +395,10 @@ public class FxUserInterfaceController implements Initializable {
 
 
         if (alliesOrAxisToggleGroup.getSelectedToggle() == alliesToggle) {
-            return MultiSubjectSummaryGenerator.getInstance().generateMultiSummary(type, selectedQuantifier, selectedQualifier.getId(),
+            return MultiSubjectSummaryGenerator.getInstance().calculate(type, selectedQuantifier, selectedQualifier.getId(),
                     selectedQualifierSet, selectedSummarizer.getId(), selectedSummarizerSet, allies, axis);
         }
-        return MultiSubjectSummaryGenerator.getInstance().generateMultiSummary(type, selectedQuantifier, selectedQualifier.getId(),
+        return MultiSubjectSummaryGenerator.getInstance().calculate(type, selectedQuantifier, selectedQualifier.getId(),
                 selectedQualifierSet, selectedSummarizer.getId(), selectedSummarizerSet, axis, allies);
 
     }

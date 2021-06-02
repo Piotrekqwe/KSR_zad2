@@ -72,7 +72,7 @@ public class Calculator {
         return result;
     }
 
-    public double cardinalNumberWithSummarizer(HashSet<Tank> tanks, TraitId summarizerId, FuzzySet summarizerSet, TraitId qualifierId, FuzzySet qualifierSet) {
+    public double cardinalNumberWithQualifier(HashSet<Tank> tanks, TraitId summarizerId, FuzzySet summarizerSet, TraitId qualifierId, FuzzySet qualifierSet) {
         double result = 0;
         double divider = 0;
         for (Tank tank : tanks) {
@@ -88,10 +88,10 @@ public class Calculator {
         return (value > set[0] && value < set[set.length - 1]);
     }
 
-    private double suppSet(HashSet<Tank> tanks, TraitId id, double[] abcd) {
+    private double suppSet(HashSet<Tank> tanks, TraitId id, double[] set) {
         int resoult = 0;
         for (Tank tank : tanks) {
-            if (supp(tank.getTraits().get(id), abcd)) resoult++;
+            if (supp(tank.getTraits().get(id), set)) resoult++;
         }
         return (double) resoult / tanks.size();
     }
@@ -152,7 +152,7 @@ public class Calculator {
         return Math.abs(resoult - t3);
     }
 
-    public double t5_11(TraitId[] summarizerIds) {
+    public double t5_t11(TraitId[] summarizerIds) {
         double resoult = 2;
         for (TraitId id : summarizerIds)
             for (FuzzySet set : getTraitById(id).getSets())
