@@ -194,4 +194,24 @@ public class Calculator {
         return 1 - result;
     }
 
+
+
+    //dodatkowe funkcje z zadania
+    public double dopelnienie(FuzzySet set, double value){
+        return 1 - set.belong(value);
+    }
+    public double suma(FuzzySet[] sets, double value) {
+        double max = 0;
+        for (FuzzySet set : sets) if (set.belong(value) > max) max = set.belong(value);
+        return max;
+    }
+    public double iloczyn(FuzzySet[] sets, double value){
+        double min = 0;
+        for (FuzzySet set : sets) if (set.belong(value) < min) min = set.belong(value);
+        return min;
+    }
+    //nośnik jest zaimplementowany w funkcji supp i suppSet
+    public boolean alfaPrzekroj(FuzzySet set, double value, double alpha){
+        return set.belong(value) >= alpha;
+    }
 }
