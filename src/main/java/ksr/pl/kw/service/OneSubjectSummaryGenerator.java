@@ -38,7 +38,7 @@ public class OneSubjectSummaryGenerator {
         result[1] = quantifierSet.belong(t1Value);
         result[2] = calculator.t2_t9(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet.getAbcd()});
         result[3] = calculator.t3(tanks, new TraitId[]{summarizerId}, new double[][]{summarizerSet.getAbcd()}, qualifierId, qualifierSet);
-        result[4] = calculator.t4(tanks, new TraitId[]{summarizerId}, result[2]);
+        result[4] = calculator.t4(tanks, new TraitId[]{summarizerId}, result[3]);
         result[5] = calculator.t5_t11(new TraitId[]{summarizerId});
         result[6] = calculator.t6(tanks.size(), quantifierIsRelative, quantifierSet.getAbcd());
         result[7] = calculator.t7(tanks.size(), quantifierIsRelative, quantifierSet.getAbcd());
