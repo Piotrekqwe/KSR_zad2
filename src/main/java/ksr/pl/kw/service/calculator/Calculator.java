@@ -171,8 +171,8 @@ public class Calculator {
 
     public double t7(int setSize, boolean quantifierIsRelative, double[] quantifierSet) {
         double resoult = 0;
-        resoult += quantifierSet[1] - quantifierSet[0] / 2;
-        resoult += quantifierSet[quantifierSet.length - 1] - quantifierSet[quantifierSet.length - 2] / 2;
+        resoult += (quantifierSet[1] - quantifierSet[0]) / 2;
+        resoult += (quantifierSet[quantifierSet.length - 1] - quantifierSet[quantifierSet.length - 2]) / 2;
         resoult += quantifierSet[quantifierSet.length - 2] - quantifierSet[1];
         if (!quantifierIsRelative) resoult /= setSize;
         return resoult;
